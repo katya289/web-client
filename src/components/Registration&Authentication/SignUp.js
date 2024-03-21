@@ -74,7 +74,7 @@ export default function SignUp() {
         dispatch(registerUser(formDataToSend)).then((result) => {
             console.log(loading)
             if (result.payload) {
-                navigate('/home')
+                navigate('/')
             }
         })
 

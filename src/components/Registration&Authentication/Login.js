@@ -42,7 +42,7 @@ export default function SignIn() {
                
                 setEmail('')
                 setPassword('')
-                navigate('/home')
+                navigate('/')
               
             }
             else {
