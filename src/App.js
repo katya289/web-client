@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-ro
 import SignIn from './components/Registration&Authentication/Login';
 import SignUp from './components/Registration&Authentication/SignUp';
 import MainPage from './components/mainPage/MainPage';
-
+import AccountPage from './components/account/AccountPage';
 
 function App() {
   return (
@@ -16,7 +16,12 @@ function App() {
                 path='/login'
                 element={<SignIn />}
               />
-    
+              <Route
+              path='/account'
+              element={<AccountPage/>}
+              >
+
+              </Route>
             </Routes>
           </Router>
     </div>
