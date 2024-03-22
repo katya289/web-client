@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import axios from "axios";
 import PrimarySearchAppBar from "../appBar/primarySearchAppBar";
+import Podcasts from "./PodcastsReview";
 
 export default function MainPage() {
     const [users, setUsers] = useState([]);
@@ -28,6 +29,7 @@ export default function MainPage() {
     return (
         <>
             <PrimarySearchAppBar></PrimarySearchAppBar>
+            <Podcasts></Podcasts>
         </>
     );
 }
