@@ -8,9 +8,8 @@ import { useState } from 'react';
 import AWS from 'aws-sdk';
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
-export default function UploadPodcast() {
+export default function UploadPodcast({openDialog, setOpenDialog, setOpen}) {
     const [file, setFile] = useState(null);
-    const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
@@ -19,19 +18,18 @@ export default function UploadPodcast() {
         format: '',
         file: null,
     });
-    const handleClose = () => {
-        console.log("closed pressed")
+    
+    const handleCloseDialog = () => {
+        setOpenDialog(false)
+        setOpen(true)
     }
-
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
     }
     const handleInputChange = (event) => {
         setFormData({ ...formData, [event.target.name]: event.target.value });
     };
-    const handleCloseDialog = () => {
-        console.log("pressed")
-    }
+    
     const handleUpload = async () => {
         try {
             const formDataSend = new FormData();
@@ -58,7 +56,7 @@ export default function UploadPodcast() {
         }
     }
     return (
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={openDialog} onClose={handleCloseDialog}>
            
             <DialogTitle>Upload podcast 
             <CloseIcon onClick={handleCloseDialog} color='primary' sx={{position: 'absolute', right: 8, cursor: 'pointer'}}  />
