@@ -27,14 +27,16 @@ export default function MainPage() {
     //     getUsers();
     // }, []);
 
-  
+
 
     return (
-        
-           
-           <UploadPodcast/>
- 
+        <>
+            <TemporaryDrawer />
+            <UploadPodcast />
+        </>
 
-        
+
+
+
     );
 }
