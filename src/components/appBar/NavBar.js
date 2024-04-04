@@ -49,6 +49,8 @@ export default function TemporaryDrawer() {
   const DrawerList = (
     <Box
       sx={{
+        bgcolor: '#222831',
+        
         width: 250,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
@@ -64,8 +66,8 @@ export default function TemporaryDrawer() {
         {Object.entries(icons).map(([text, icon]) => (
           <ListItem key={text} disablePadding onClick={() => eventHandlers[text](text)}>
             <ListItemButton>
-              <ListItemIcon>{icon}</ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemIcon sx={{color: 'white'}}>{icon}</ListItemIcon>
+              <ListItemText sx={{color: 'white'}} primary={text} />
             </ListItemButton>
           </ListItem>
         ))}

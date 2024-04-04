@@ -8,7 +8,7 @@ import { useState } from 'react';
 import AWS from 'aws-sdk';
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
-export default function UploadPodcast({openDialog, setOpenDialog, setOpen}) {
+export default function UploadPodcast({ openDialog, setOpenDialog, setOpen }) {
     const [file, setFile] = useState(null);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -18,7 +18,7 @@ export default function UploadPodcast({openDialog, setOpenDialog, setOpen}) {
         format: '',
         file: null,
     });
-    
+
     const handleCloseDialog = () => {
         setOpenDialog(false)
         setOpen(true)
@@ -27,9 +27,12 @@ export default function UploadPodcast({openDialog, setOpenDialog, setOpen}) {
         setFile(event.target.files[0]);
     }
     const handleInputChange = (event) => {
+        console.log(event.target.name)
+        console.log(event.target.value)
         setFormData({ ...formData, [event.target.name]: event.target.value });
+
     };
-    
+
     const handleUpload = async () => {
         try {
             const formDataSend = new FormData();
@@ -47,8 +50,8 @@ export default function UploadPodcast({openDialog, setOpenDialog, setOpen}) {
 
             });
             console.log('File uploaded successfully:', response.data);
-            console.log('Navigating to the main page...');
-            navigate('/login');
+
+            navigate('/');
         }
 
         catch (error) {
@@ -56,12 +59,12 @@ export default function UploadPodcast({openDialog, setOpenDialog, setOpen}) {
         }
     }
     return (
-        <Dialog open={openDialog} onClose={handleCloseDialog}>
-           
-            <DialogTitle>Upload podcast 
-            <CloseIcon onClick={handleCloseDialog} color='primary' sx={{position: 'absolute', right: 8, cursor: 'pointer'}}  />
+        <Dialog sx={{ bgcolor: 'white' }} open={openDialog} onClose={handleCloseDialog}>
+
+            <DialogTitle>Upload podcast
+                <CloseIcon onClick={handleCloseDialog} color='primary' sx={{ position: 'absolute', right: 8, cursor: 'pointer' }} />
             </DialogTitle>
-            
+
             <DialogContent sx={{ p: 2 }}>
                 <TextField name='name' value={formData.name} onChange={handleInputChange} autoFocus required margin='dense' id='name' label='Podcast name' type='text' fullWidth />
                 <TextField name='description' value={formData.description} onChange={handleInputChange} autoFocus required margin='dense' id='desc' label='Podcast description' type='text' fullWidth multiline rows={5} sx={{ height: 'auto', mt: 2 }} /> {/* Added margin-top */}
@@ -69,19 +72,19 @@ export default function UploadPodcast({openDialog, setOpenDialog, setOpen}) {
                     <FormControl fullWidth sx={{ flex: 1 }}>
                         <InputLabel id='select-label'>Format</InputLabel>
                         <Select name='format' value={formData.format} onChange={handleInputChange} label='Format' labelId='select-label'>
-                            <MenuItem>Audio</MenuItem>
-                            <MenuItem>Video</MenuItem>
+                            <MenuItem value="Audio">Audio</MenuItem>
+                            <MenuItem value="Video">Video</MenuItem>
                         </Select>
                     </FormControl>
                     <FormControl fullWidth sx={{ flex: 1 }}>
                         <InputLabel id='select-label-category'>Category</InputLabel>
                         <Select name='category' value={formData.category} onChange={handleInputChange} label='Category' labelId='select-label-category'>
-                            <MenuItem>Comedy</MenuItem>
-                            <MenuItem>Arts</MenuItem>
-                            <MenuItem>Education</MenuItem>
-                            <MenuItem>Fitness</MenuItem>
-                            <MenuItem>Sports</MenuItem>
-                            <MenuItem>Business</MenuItem>
+                            <MenuItem value="Comedy">Comedy</MenuItem>
+                            <MenuItem value="Arts">Arts</MenuItem>
+                            <MenuItem value="Education">Education</MenuItem>
+                            <MenuItem value="Fitness">Fitness</MenuItem>
+                            <MenuItem value="Sports">Sports</MenuItem>
+                            <MenuItem value="Business">Business</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
@@ -97,7 +100,7 @@ export default function UploadPodcast({openDialog, setOpenDialog, setOpen}) {
                         borderRadius: '5px',
                         justifyContent: 'center',
                         margin: 'auto',
-                        mt: 2, 
+                        mt: 2,
                     }}
                     action=""
                     onClick={() => document.querySelector(".input-field").click()}
