@@ -21,7 +21,7 @@ import { loginUser } from '../../features/auth/authSlice';
 
 export default function SignIn() {
     const [isOpen, setIsOpen] = React.useState(false);
- 
+    const [token, setToken] = useState("");
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
@@ -39,7 +39,9 @@ export default function SignIn() {
         dispatch(loginUser(userCredentials)).then((result) => {
             if(result.payload)
             {
-               
+                console.log(result.payload.accessToken)
+                setToken(result.payload.accessToken);
+                localStorage.setItem("token", result.payload.accessToken)
                 setEmail('')
                 setPassword('')
                 navigate('/')

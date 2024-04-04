@@ -1,16 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../api";
-
+import axios from "axios";
+import { BASE_URL } from "../../components/constants";
 
 
 
 export const registerUser = createAsyncThunk(
     'user/RegisterUser',
     async (userCredentials) => {
-        const request = await api.post(`/register`, userCredentials);
+        console.log(userCredentials)
+        // const request = await api.post(`users/register`, userCredentials);
+        const request = await axios.post(`${BASE_URL}api/users/register`, userCredentials);
         const response = await request.data;
-        console.log(response)
-        localStorage.setItem("token", response.token);
+        console.log(response.data)
         return response;
     }
 )
@@ -40,7 +42,7 @@ const registerSlice = createSlice({
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = true;
                 console.log(action.error);
-                state.error = action.error.message;
+                state.error = action.error;
                 state.user = null
             })
     }

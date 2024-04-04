@@ -5,7 +5,7 @@ import axios from "axios";
 export const loginUser = createAsyncThunk(
     'user/loginUser',
     async(userCredentials) => {
-        const request = await axios.post(`${BASE_URL}api/authorize`, userCredentials);
+        const request = await axios.post(`${BASE_URL}api/users/login`, userCredentials);
         const response = await request.data;
         localStorage.setItem("token", response.token);
         return response;
@@ -35,7 +35,7 @@ const authSlice = createSlice({
         })
         .addCase(loginUser.rejected, (state, action) => {
             state.loading = true;
-            // console.log(action.error.message);
+            console.log(action.error);
             // state.error = action.error.message;
             state.error = "Invalid credentials";
             state.user = null;

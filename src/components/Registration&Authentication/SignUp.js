@@ -19,6 +19,7 @@ import { CustomDialog } from '../CustomDialog';
 import { BASE_URL } from '../constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../../features/register/registerSlice';
+import axios from "axios";
 const style = {
     position: 'absolute',
     top: '50%',
@@ -71,18 +72,23 @@ export default function SignUp() {
         formDataToSend.append('password', formData.password);
         formDataToSend.append('avatar', formData.avatar);
         localStorage.setItem('avatar', formData.avatar.name);
-        dispatch(registerUser(formDataToSend)).then((result) => {
-            console.log(loading)
-            if (result.payload) {
-                navigate('/')
-            }
-        })
-
+        // console.log(formData.email)
+        // console.log(formDataToSend)
+        try {
+            const response = axios.post(`http://127.0.0.1:4000/api/users/register`, formDataToSend);
+            console.log(response.data)
+            navigate('/')
+        }
+        catch (error)
+        {
+            console.log(error)
+        }
+     
     };
     return (
         <Box>
             <ThemeProvider theme={defaultTheme}>
-                <Container onSubmit={handleSubmit} component="main" maxWidth="xs">
+                <Container component="main" maxWidth="xs">
                     <CssBaseline />
                     <Box
                         sx={{

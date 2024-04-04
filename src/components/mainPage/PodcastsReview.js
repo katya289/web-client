@@ -15,7 +15,7 @@ import { Link } from '@mui/material';
 export default function Podcasts() {
   const [podcasts, setPodcasts] = useState([]);
   const theme = useTheme();
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzExODczOTMxLCJleHAiOjE3MTE5NjAzMzF9.U1WLLo1502PPsnop6GOPFhTM9D4rBNTOaQ6rTKx8Ndo';
+  const token = localStorage.getItem("token");
   useEffect(() => {
 
     axios.get('http://127.0.0.1:4000/api/podcasts/get', {

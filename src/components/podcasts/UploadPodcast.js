@@ -41,7 +41,7 @@ export default function UploadPodcast({ openDialog, setOpenDialog, setOpen }) {
             formDataSend.append('format', formData.format);
             formDataSend.append('category', formData.category);
             formDataSend.append('file', file);
-            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzExODczOTMxLCJleHAiOjE3MTE5NjAzMzF9.U1WLLo1502PPsnop6GOPFhTM9D4rBNTOaQ6rTKx8Ndo';
+            const token = localStorage.getItem("token");
             const response = await axios.post('http://127.0.0.1:4000/api/podcasts/upload', formDataSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
