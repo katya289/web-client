@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -15,22 +15,34 @@ import LoginIcon from '@mui/icons-material/Login';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { useNavigate } from 'react-router-dom';
 import UploadPodcast from '../podcasts/UploadPodcast';
-export default function TemporaryDrawer() {
-  const [open, setOpen] = useState(true);
-  const [openDialog, setOpenDialog] = useState(false);
+
+export default function TemporaryDrawer({ open, setOpenDialog }) {
   const navigate = useNavigate();
-  const toggleDrawer = () => {
-    setOpen(!open);
+  const drawerRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+        setOpenDialog(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [setOpenDialog]);
+
+  const handleLogInClick = () => {
+    navigate('/login');
   };
-
-
   const handleDashboardClick = () => {
-    console.log()
-  }
+    console.log();
+  };
   const handleUploadClick = () => {
     setOpenDialog(true);
-  }
-  
+  };
+
   const icons = {
     'Dashboard': <HomeIcon />,
     'Favorites': <FavoriteIcon />,
@@ -43,14 +55,14 @@ export default function TemporaryDrawer() {
   const eventHandlers = {
     'Dashboard': handleDashboardClick,
     'Upload': handleUploadClick,
-
+    'Log in': handleLogInClick,
   };
 
   const DrawerList = (
     <Box
+      ref={drawerRef}
       sx={{
         bgcolor: '#222831',
-        
         width: 250,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
@@ -59,15 +71,14 @@ export default function TemporaryDrawer() {
         },
       }}
       role="presentation"
-      onClick={toggleDrawer}
     >
       <Divider />
       <List>
         {Object.entries(icons).map(([text, icon]) => (
           <ListItem key={text} disablePadding onClick={() => eventHandlers[text](text)}>
             <ListItemButton>
-              <ListItemIcon sx={{color: 'white'}}>{icon}</ListItemIcon>
-              <ListItemText sx={{color: 'white'}} primary={text} />
+              <ListItemIcon sx={{ color: 'white' }}>{icon}</ListItemIcon>
+              <ListItemText sx={{ color: 'white' }} primary={text} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -78,12 +89,9 @@ export default function TemporaryDrawer() {
 
   return (
     <div>
-      {console.log(open)}
       <Drawer open={open} ModalProps={{ BackdropProps: { invisible: true } }}>
         {DrawerList}
       </Drawer>
-    
-      <UploadPodcast openDialog={openDialog} setOpenDialog={setOpenDialog} setOpen={setOpen}></UploadPodcast>
     </div>
   );
 }

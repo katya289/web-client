@@ -1,68 +1,94 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useTheme } from '@mui/material/styles';
+import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import { Link } from '@mui/material';
-
+import HeadphonesIcon from '@mui/icons-material/Headphones';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import Avatar from '@mui/material/Avatar';
+import api from '../../api';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import IconButton from '@mui/material/IconButton';
+import { Badge } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 export default function Podcasts() {
   const [podcasts, setPodcasts] = useState([]);
-  const theme = useTheme();
-  const token = localStorage.getItem("token");
+  const [user, setUser] = useState({});
+  const navigate = useNavigate();
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const podcastsResponse = await api.get('podcasts/get');
+        setPodcasts(podcastsResponse.data.podcast);
+        console.log("Podcasts fetched successfully:", podcastsResponse.data);
 
-    axios.get('http://127.0.0.1:4000/api/podcasts/get', {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${token}`
+        const userResponse = await api.get('users/get');
+        setUser(userResponse.data.user);
+        console.log("User fetched successfully:", userResponse.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
-    })
-      .then(response => {
-        setPodcasts(response.data.podcast);
-        console.log("Succes", response.data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }, []);
+    };
 
+    fetchData();
+  }, []);
+  const handleLikeClick = (event) => {
+    console.log(event)
+  }
+  const handleOpenVideo = (path) => {
+    console.log(path)
+  }
   return (
     <>
+        <Card sx={{ display: 'flex'}}>
 
-      <Card sx={{ display: 'flex', width: 'calc(100% - 250px)', marginLeft: 30, bgcolor: '#76ABAE'}}>
-
-        {podcasts.map((item) => (
-          <Box key={item.id}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: 'center' }}>
-              <CardContent sx={{ flex: '1 0 auto' }}>
-                <Typography component="div" variant="h5">
-                  {item.name}
-                </Typography>
-                
-
-              </CardContent>
-
-              <CardMedia
-                component="video"
-                sx={{ width: 151, alignSelf: 'center' }}
-                src={item.path_file}
-                alt="Live from space album cover"
-              />
+            {podcasts.map((item) => (
+                <Box key={item.id}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: 'center', m: 3 }}>
+                        <CardMedia
+                            onClick={() => handleOpenVideo(item.path_file)}
+                            component="video"
+                            sx={{ width: 200, alignSelf: 'center', cursor: 'pointer' }}
+                            src={item.path_file}
+                            alt="Cannot display video or audio file"
+                        />
+                        <IconButton onClick={() => handleLikeClick(item.id)}>
+                            <Badge badgeContent={1}>
+                                <FavoriteBorderIcon />
+                            </Badge>
+                        </IconButton>
 
 
-            </Box>
 
-          </Box>
-        ))}
-      </Card>
+
+                        <CardContent sx={{ flex: '1 0 auto' }}>
+                            <Typography component="div" variant="h5">
+                                {item.name}
+                            </Typography>
+                            <Typography>Format: {item.format}<HeadphonesIcon /></Typography>
+                            <Typography>Category: {item.category}</Typography>
+
+                            <Stack direction={'row'} spacing={2}>
+                                <Avatar alt='User' src={item.avatar} />
+                                <Typography>{user.name}</Typography>
+                                <Typography>Views</Typography>
+                            </Stack>
+
+                        </CardContent>
+
+                    </Box>
+
+                </Box>
+            ))}
+        </Card>
+       
+
     </>
 
-  );
+
+
+
+);
 }
