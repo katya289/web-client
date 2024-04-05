@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -19,7 +19,7 @@ import UploadPodcast from '../podcasts/UploadPodcast';
 export default function TemporaryDrawer({ open, setOpenDialog }) {
   const navigate = useNavigate();
   const drawerRef = useRef(null);
-
+  const [uploadOpen, setUploadOpen] = useState(false);
   useEffect(() => {
     function handleClickOutside(event) {
       if (drawerRef.current && !drawerRef.current.contains(event.target)) {
@@ -40,7 +40,10 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
     console.log();
   };
   const handleUploadClick = () => {
-    setOpenDialog(true);
+    // setOpenDialog(true);
+    // console.log('open', open);
+    setUploadOpen(true);
+    // <UploadPodcast open={open} />
   };
 
   const icons = {
@@ -92,6 +95,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
       <Drawer open={open} ModalProps={{ BackdropProps: { invisible: true } }}>
         {DrawerList}
       </Drawer>
+      <UploadPodcast open={uploadOpen} setUploadOpen={setUploadOpen} />
     </div>
   );
 }

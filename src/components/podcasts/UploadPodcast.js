@@ -4,11 +4,11 @@ import { IconButton, Box, Input, Typography, Dialog, DialogTitle, DialogContent,
 import { TextField } from '@mui/material';
 import { CloudUpload } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AWS from 'aws-sdk';
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
-export default function UploadPodcast({ openDialog, setOpenDialog, setOpen }) {
+export default function UploadPodcast({ open, setUploadOpen }) {
     const [file, setFile] = useState(null);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -18,10 +18,12 @@ export default function UploadPodcast({ openDialog, setOpenDialog, setOpen }) {
         format: '',
         file: null,
     });
-
+    useEffect(() => {
+        console.log('open', open)
+    }, [])
     const handleCloseDialog = () => {
-        setOpenDialog(false)
-        setOpen(true)
+     
+        setUploadOpen(false)
     }
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
@@ -59,7 +61,7 @@ export default function UploadPodcast({ openDialog, setOpenDialog, setOpen }) {
         }
     }
     return (
-        <Dialog sx={{ bgcolor: 'white' }} open={openDialog} onClose={handleCloseDialog}>
+        <Dialog sx={{ bgcolor: 'white' }}  open={open} onClose={handleCloseDialog}>  
 
             <DialogTitle>Upload podcast
                 <CloseIcon onClick={handleCloseDialog} color='primary' sx={{ position: 'absolute', right: 8, cursor: 'pointer' }} />
