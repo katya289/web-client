@@ -13,7 +13,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import IconButton from '@mui/material/IconButton';
 import { Badge } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import SimpleDialogDemo from './VideoDetailsDialog';
+import VideoDialog from './VideoDetailsDialog';
 export default function Podcasts() {
   const [podcasts, setPodcasts] = useState([]);
   const [user, setUser] = useState({});
@@ -91,8 +91,11 @@ export default function Podcasts() {
                 </Box>
             ))}
         </Card>
-       {videoShow ? <SimpleDialogDemo/>: 
+       {/* {videoShow ? <SimpleDialogDemo/>: 
        <div>Error</div>
+       } */}
+       {videoShow ? <VideoDialog videoShow={videoShow}/>:
+       <div>error</div>
        }
 
     </>
