@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,22 +16,33 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { CustomDialog } from '../CustomDialog';
 
+import { clearAlert, setAlert } from '../../features/alert/alertSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../../features/auth/authSlice';
+import Alert from '@mui/material/Alert';
 
 export default function SignIn() {
-    const [isOpen, setIsOpen] = React.useState(false);
+    // const [isOpen, setIsOpen] = React.useState(false);
     const [token, setToken] = useState("");
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
     const {loading, error} = useSelector((state) => state.auth);
+    const { isOpen, message, type } = useSelector(state => state.alert);
     const navigate = useNavigate();
- 
-    const handleDialogClose = () => {
-        setIsOpen(false);
-
-    };
+    useEffect(() => {
+        if (isOpen) {
+            setTimeout(() => {
+                dispatch(clearAlert());
+                // Перенаправление происходит только в случае успешной авторизации
+                if (!error) {
+                    navigate('/');
+                }
+            }, 4500);
+        }
+    }, [isOpen, error, dispatch, navigate]);
+    
+    
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -39,16 +50,18 @@ export default function SignIn() {
         dispatch(loginUser(userCredentials)).then((result) => {
             if(result.payload)
             {
-                console.log(result.payload.accessToken)
+                console.log(result.payload)
                 setToken(result.payload.accessToken);
                 localStorage.setItem("token", result.payload.accessToken)
                 setEmail('')
                 setPassword('')
-                navigate('/')
-              
+                // navigate('/')
+                dispatch(setAlert({ message: 'Authorization successfull!', type: 'success' }));
+
             }
             else {
-                setIsOpen(true)
+                dispatch(setAlert({ message: error, type: 'error' }));
+
             }
            
         })
@@ -126,9 +139,12 @@ export default function SignIn() {
                     </Box>
                 </Container>
             </ThemeProvider>
-            <CustomDialog isOpen={isOpen} title="Error" handleClose={handleDialogClose}>
+            {/* <CustomDialog isOpen={isOpen} title="Error" handleClose={handleDialogClose}>
                 <p>{error}</p>
-            </CustomDialog>
+            </CustomDialog> */}
+            {isOpen && (
+                <Alert severity={type} sx={{ width: '200px', position: 'fixed', bottom: 20, right: 20, zIndex: 9999 }}>{message} </Alert>
+            )}
         </>
     );
 }

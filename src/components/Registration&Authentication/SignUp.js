@@ -12,9 +12,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useState } from 'react';
-import api from '../../api';
+import { useState, useEffect } from 'react';
+import Alert from '@mui/material/Alert';
 import { useNavigate } from "react-router-dom";
+import { setAlert, clearAlert } from '../../features/alert/alertSlice';
 import { CustomDialog } from '../CustomDialog';
 import { BASE_URL } from '../constants';
 import { useDispatch, useSelector } from 'react-redux';
@@ -50,6 +51,7 @@ const defaultTheme = createTheme();
 export default function SignUp() {
     const dispatch = useDispatch();
     const { error, loading } = useSelector(state => state.register);
+    const { isOpen, message, type } = useSelector(state => state.alert);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -57,6 +59,17 @@ export default function SignUp() {
         avatar: null,
     });
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (isOpen) {
+            setTimeout(() => {
+                dispatch(clearAlert());
+                navigate('/');
+            }, 4500);
+        }
+    }, [isOpen, dispatch, navigate]);
+    
+
     const handleChange = (e) => {
         if (e.target.name === 'avatar') {
             setFormData({ ...formData, avatar: e.target.files[0] });
@@ -77,13 +90,15 @@ export default function SignUp() {
         try {
             const response = axios.post(`http://127.0.0.1:4000/api/users/register`, formDataToSend);
             console.log(response.data)
-            navigate('/')
+            dispatch(setAlert({ message: 'Registration successfull!', type: 'success' }));
+            // navigate('/')
         }
-        catch (error)
-        {
+        catch (error) {
             console.log(error)
+            dispatch(setAlert({ message: error.response.data.error, type: 'error' }));
+
         }
-     
+
     };
     return (
         <Box>
@@ -178,9 +193,9 @@ export default function SignUp() {
                     <Copyright sx={{ mt: 5 }} />
                 </Container>
             </ThemeProvider>
-            {/* <CustomDialog isOpen={isOpen} handleClose={handleDialogClose} title='Success'>
-                <Typography>User successfully registrated</Typography>
-            </CustomDialog> */}
+            {isOpen && (
+                <Alert severity={type} sx={{ width: '200px', position: 'fixed', bottom: 20, right: 20, zIndex: 9999 }}>{message} </Alert>
+            )}
 
         </Box>
 
