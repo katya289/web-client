@@ -94,7 +94,7 @@ export default function Podcasts() {
        {/* {videoShow ? <SimpleDialogDemo/>: 
        <div>Error</div>
        } */}
-       {videoShow ? <VideoDialog videoShow={videoShow}/>:
+       {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts}/>:
        <div>error</div>
        }
 

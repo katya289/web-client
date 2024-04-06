@@ -61,9 +61,10 @@ export default function UploadPodcast({ open, setUploadOpen }) {
         if (isOpen) {
             setTimeout(() => {
                 dispatch(clearAlert());
+                navigate('/');
             }, 4500); 
         }
-    }, [isOpen, dispatch]);
+    }, [isOpen, dispatch, navigate]);
 
     return (
         <Dialog sx={{ bgcolor: 'white' }} open={open} onClose={handleCloseDialog}>

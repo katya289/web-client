@@ -84,13 +84,11 @@ export default function VideoPlayer() {
     }
     return (
         <>
-            <header className='header__section'>
-                <p className='header__text'>Build a Video Player - Tutorial</p>
-            </header>
+
             <Container maxWidth="md">
                 <div className='playerDiv' ref={playerDivRef}>
                     <ReactPlayer width={'100%'} height='100%'
-                        url="https://s3.eu-central-1.amazonaws.com/aws-bucket.test/test-1.mp4"
+                        url="https://s3.eu-central-1.amazonaws.com/aws-bucket.test/Learn+English+with+the+JOE+ROGAN+PODCAST+%C3%A2%C2%80%C2%94+Elon+Musk.mp4"
                         ref={playerRef}
                         playing={playing}
                         muted={mute}

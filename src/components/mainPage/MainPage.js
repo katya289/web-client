@@ -13,7 +13,7 @@ export default function MainPage({isOpen, message}) {
 
             <PrimarySearchAppBar />
             <Podcasts />
-            <VideoPlayer/>
+            {/* <VideoPlayer/> */}
     
         </>
     );
