@@ -24,9 +24,7 @@ function App() {
             path='/account'
             element={<AccountPage />}
           >
-
           </Route>
-          
         </Routes>
       </Router>
 

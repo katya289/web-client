@@ -13,9 +13,12 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import IconButton from '@mui/material/IconButton';
 import { Badge } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import SimpleDialogDemo from './VideoDetailsDialog';
 export default function Podcasts() {
   const [podcasts, setPodcasts] = useState([]);
   const [user, setUser] = useState({});
+  const [likeCount, setLikeCount] = useState({});
+  const [videoShow, setVideoShow] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
@@ -31,14 +34,20 @@ export default function Podcasts() {
         console.error('Error fetching data:', error);
       }
     };
-
+    
     fetchData();
   }, []);
-  const handleLikeClick = (event) => {
-    console.log(event)
-  }
+  const handleLikeClick = (id) => {
+    setLikeCount((prevLikes) => ({
+      ...prevLikes,
+      [id]: (prevLikes[id] || 0) + 1,
+    }));
+    console.log(`Podcast ${id} has ${likeCount[id] !== undefined ? likeCount[id] + 1 : 1} likes`);
+  };
+  
   const handleOpenVideo = (path) => {
     console.log(path)
+    setVideoShow(true);
   }
   return (
     <>
@@ -55,11 +64,10 @@ export default function Podcasts() {
                             alt="Cannot display video or audio file"
                         />
                         <IconButton onClick={() => handleLikeClick(item.id)}>
-                            <Badge badgeContent={1}>
+                            <Badge badgeContent={likeCount[item.id] || 0}>
                                 <FavoriteBorderIcon />
                             </Badge>
                         </IconButton>
-
 
 
 
@@ -83,7 +91,9 @@ export default function Podcasts() {
                 </Box>
             ))}
         </Card>
-       
+       {videoShow ? <SimpleDialogDemo/>: 
+       <div>Error</div>
+       }
 
     </>
 

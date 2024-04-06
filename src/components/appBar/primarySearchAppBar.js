@@ -129,7 +129,7 @@ export default function PrimarySearchAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" sx={{backgroundColor: '#222831'}}>
         <Toolbar>
           <IconButton
             onClick={handleDrawerClick}
@@ -141,14 +141,7 @@ export default function PrimarySearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-          >
-            MUI
-          </Typography>
+          
           <Search>
             <SearchIconWrapper>
               <SearchIcon />

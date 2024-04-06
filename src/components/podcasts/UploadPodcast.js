@@ -1,15 +1,17 @@
-import OutlinedInput from '@mui/material/OutlinedInput';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import { IconButton, Box, Input, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, InputLabel, Select, MenuItem, FormControl, Button } from '@mui/material';
-import { TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAlert, clearAlert } from '../../features/alert/alertSlice';
+import axios from 'axios';
+import { TextField, Dialog, DialogTitle, DialogContent, DialogActions, InputLabel, Select, MenuItem, FormControl, Button } from '@mui/material';
 import { CloudUpload } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useEffect, useState } from 'react';
-import AWS from 'aws-sdk';
-import axios from "axios"
+import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
 export default function UploadPodcast({ open, setUploadOpen }) {
     const [file, setFile] = useState(null);
+    const dispatch = useDispatch();
+    const { isOpen, message, type } = useSelector(state => state.alert);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
@@ -18,21 +20,17 @@ export default function UploadPodcast({ open, setUploadOpen }) {
         format: '',
         file: null,
     });
-    useEffect(() => {
-        console.log('open', open)
-    }, [])
+
     const handleCloseDialog = () => {
-     
-        setUploadOpen(false)
-    }
+        setUploadOpen(false);
+    };
+
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
-    }
-    const handleInputChange = (event) => {
-        console.log(event.target.name)
-        console.log(event.target.value)
-        setFormData({ ...formData, [event.target.name]: event.target.value });
+    };
 
+    const handleInputChange = (event) => {
+        setFormData({ ...formData, [event.target.name]: event.target.value });
     };
 
     const handleUpload = async () => {
@@ -43,53 +41,57 @@ export default function UploadPodcast({ open, setUploadOpen }) {
             formDataSend.append('format', formData.format);
             formDataSend.append('category', formData.category);
             formDataSend.append('file', file);
-            const token = localStorage.getItem("token");
+            const token = localStorage.getItem('token');
             const response = await axios.post('http://127.0.0.1:4000/api/podcasts/upload', formDataSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${token}`
-                }
-
+                    Authorization: `Bearer ${token}`,
+                },
             });
             console.log('File uploaded successfully:', response.data);
-
+            dispatch(setAlert({ message: 'File uploaded successfully', type: 'success' }));
             navigate('/');
-        }
-
-        catch (error) {
+        } catch (error) {
             console.error('Error uploading file:', error);
+            dispatch(setAlert({ message: error.response.data.error, type: 'error' }));
         }
-    }
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            setTimeout(() => {
+                dispatch(clearAlert());
+            }, 4500); 
+        }
+    }, [isOpen, dispatch]);
+
     return (
-        <Dialog sx={{ bgcolor: 'white' }}  open={open} onClose={handleCloseDialog}>  
-
-            <DialogTitle>Upload podcast
-                <CloseIcon onClick={handleCloseDialog} color='primary' sx={{ position: 'absolute', right: 8, cursor: 'pointer' }} />
+        <Dialog sx={{ bgcolor: 'white' }} open={open} onClose={handleCloseDialog}>
+            <DialogTitle>
+                Upload podcast
+                <CloseIcon onClick={handleCloseDialog} color="primary" sx={{ position: 'absolute', right: 8, cursor: 'pointer' }} />
             </DialogTitle>
-
             <DialogContent sx={{ p: 2 }}>
-                <TextField name='name' value={formData.name} onChange={handleInputChange} autoFocus required margin='dense' id='name' label='Podcast name' type='text' fullWidth />
-                <TextField name='description' value={formData.description} onChange={handleInputChange} autoFocus required margin='dense' id='desc' label='Podcast description' type='text' fullWidth multiline rows={5} sx={{ height: 'auto', mt: 2 }} /> {/* Added margin-top */}
-                <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-                    <FormControl fullWidth sx={{ flex: 1 }}>
-                        <InputLabel id='select-label'>Format</InputLabel>
-                        <Select name='format' value={formData.format} onChange={handleInputChange} label='Format' labelId='select-label'>
-                            <MenuItem value="Audio">Audio</MenuItem>
-                            <MenuItem value="Video">Video</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <FormControl fullWidth sx={{ flex: 1 }}>
-                        <InputLabel id='select-label-category'>Category</InputLabel>
-                        <Select name='category' value={formData.category} onChange={handleInputChange} label='Category' labelId='select-label-category'>
-                            <MenuItem value="Comedy">Comedy</MenuItem>
-                            <MenuItem value="Arts">Arts</MenuItem>
-                            <MenuItem value="Education">Education</MenuItem>
-                            <MenuItem value="Fitness">Fitness</MenuItem>
-                            <MenuItem value="Sports">Sports</MenuItem>
-                            <MenuItem value="Business">Business</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
+                <TextField name="name" value={formData.name} onChange={handleInputChange} autoFocus required margin="dense" id="name" label="Podcast name" type="text" fullWidth />
+                <TextField name="description" value={formData.description} onChange={handleInputChange} autoFocus required margin="dense" id="desc" label="Podcast description" type="text" fullWidth multiline rows={5} sx={{ height: 'auto', mt: 2 }} />
+                <FormControl fullWidth sx={{ mt: 2 }}>
+                    <InputLabel id="select-label">Format</InputLabel>
+                    <Select name="format" value={formData.format} onChange={handleInputChange} label="Format" labelId="select-label">
+                        <MenuItem value="Audio">Audio</MenuItem>
+                        <MenuItem value="Video">Video</MenuItem>
+                    </Select>
+                </FormControl>
+                <FormControl fullWidth sx={{ mt: 2 }}>
+                    <InputLabel id="select-label-category">Category</InputLabel>
+                    <Select name="category" value={formData.category} onChange={handleInputChange} label="Category" labelId="select-label-category">
+                        <MenuItem value="Comedy">Comedy</MenuItem>
+                        <MenuItem value="Arts">Arts</MenuItem>
+                        <MenuItem value="Education">Education</MenuItem>
+                        <MenuItem value="Fitness">Fitness</MenuItem>
+                        <MenuItem value="Sports">Sports</MenuItem>
+                        <MenuItem value="Business">Business</MenuItem>
+                    </Select>
+                </FormControl>
                 <FormControl
                     sx={{
                         border: '2px dashed #1475cf',
@@ -105,7 +107,7 @@ export default function UploadPodcast({ open, setUploadOpen }) {
                         mt: 2,
                     }}
                     action=""
-                    onClick={() => document.querySelector(".input-field").click()}
+                    onClick={() => document.querySelector('.input-field').click()}
                 >
                     <input type="file" accept="image/*,video/*" className="input-field" hidden onChange={handleFileChange} />
                     <CloudUpload />
@@ -115,6 +117,10 @@ export default function UploadPodcast({ open, setUploadOpen }) {
             <DialogActions>
                 <Button onClick={handleUpload}>Upload</Button>
             </DialogActions>
+            {isOpen && (
+
+                <Alert severity={type} sx={{ width: '200px', position: 'fixed', bottom: 20, right: 20, zIndex: 9999 }}>{message} </Alert>
+            )}
         </Dialog>
     );
 }
