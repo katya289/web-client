@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  /* backgroundColor: '#31363F', */
+  /* background-color: '#31363F'; */
 }
 
 .App-logo {
@@ -35,4 +37,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+body {
+  background-color: #31363F; /* Укажите нужный вам цвет */
+  
 }

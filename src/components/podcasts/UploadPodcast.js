@@ -61,7 +61,8 @@ export default function UploadPodcast({ open, setUploadOpen }) {
         if (isOpen) {
             setTimeout(() => {
                 dispatch(clearAlert());
-                navigate('/');
+                // navigate('/');
+                setUploadOpen(false)
             }, 4500); 
         }
     }, [isOpen, dispatch, navigate]);

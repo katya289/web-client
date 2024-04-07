@@ -11,15 +11,18 @@ import Avatar from '@mui/material/Avatar';
 import api from '../../api';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
 import { Badge } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import VideoDialog from './VideoDetailsDialog';
+
 export default function Podcasts() {
   const [podcasts, setPodcasts] = useState([]);
   const [user, setUser] = useState({});
   const [likeCount, setLikeCount] = useState({});
   const [videoShow, setVideoShow] = useState(false);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -34,9 +37,10 @@ export default function Podcasts() {
         console.error('Error fetching data:', error);
       }
     };
-    
+
     fetchData();
   }, []);
+
   const handleLikeClick = (id) => {
     setLikeCount((prevLikes) => ({
       ...prevLikes,
@@ -44,64 +48,48 @@ export default function Podcasts() {
     }));
     console.log(`Podcast ${id} has ${likeCount[id] !== undefined ? likeCount[id] + 1 : 1} likes`);
   };
-  
+
   const handleOpenVideo = (path) => {
     console.log(path)
     setVideoShow(true);
   }
+
   return (
     <>
-        <Card sx={{ display: 'flex'}}>
-
-            {podcasts.map((item) => (
-                <Box key={item.id}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: 'center', m: 3 }}>
-                        <CardMedia
-                            onClick={() => handleOpenVideo(item.path_file)}
-                            component="video"
-                            sx={{ width: 200, alignSelf: 'center', cursor: 'pointer' }}
-                            src={item.path_file}
-                            alt="Cannot display video or audio file"
-                        />
-                        <IconButton onClick={() => handleLikeClick(item.id)}>
-                            <Badge badgeContent={likeCount[item.id] || 0}>
-                                <FavoriteBorderIcon />
-                            </Badge>
-                        </IconButton>
-
-
-
-                        <CardContent sx={{ flex: '1 0 auto' }}>
-                            <Typography component="div" variant="h5">
-                                {item.name}
-                            </Typography>
-                            <Typography>Format: {item.format}<HeadphonesIcon /></Typography>
-                            <Typography>Category: {item.category}</Typography>
-
-                            <Stack direction={'row'} spacing={2}>
-                                <Avatar alt='User' src={item.avatar} />
-                                <Typography>{user.name}</Typography>
-                                <Typography>Views</Typography>
-                            </Stack>
-
-                        </CardContent>
-
-                    </Box>
-
-                </Box>
-            ))}
-        </Card>
-       {/* {videoShow ? <SimpleDialogDemo/>: 
-       <div>Error</div>
-       } */}
-       {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts}/>:
-       <div>error</div>
-       }
-
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 4, m: 3 }}>
+        {podcasts.map((item) => (
+          <Paper key={item.id} elevation={4} sx={{ backgroundColor: '#222831', width: 250, padding: 2, borderRadius: 3, "&:hover": { boxShadow: '0px 0px 10px 5px rgba(0,0,0,0.3)', backgroundColor: 'rgba(0, 0, 0, 0.1)' }, transition: 'box-shadow 0.3s ease' }}>
+            <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+              <CardMedia
+                onClick={() => handleOpenVideo(item.path_file)}
+                component="video"
+                sx={{ width: '100%', cursor: 'pointer' }}
+                src={item.path_file}
+                alt="Cannot display video or audio file"
+              />
+             
+              <CardContent sx={{ bgcolor: '#31363F', flex: '1 0 auto', color: 'white' }}>
+                <IconButton onClick={() => handleLikeClick(item.id)}>
+                  <Badge badgeContent={likeCount[item.id] || 0} sx={{ color: 'white' }}>
+                    <FavoriteBorderIcon sx={{ color: 'white' }} />
+                  </Badge>
+                </IconButton>
+                <Typography component="div" variant="h5">
+                  {item.name}
+                </Typography>
+                <Typography>Format: {item.format}<HeadphonesIcon /></Typography>
+                <Typography>Category: {item.category}</Typography>
+                <Stack direction={'row'} spacing={2} alignItems="center">
+                  <Avatar alt='User' src={item.avatar} sx={{width: '30px', height: '30px'}} />
+                  <Typography>{user.name}</Typography>
+                  <Typography>Views</Typography>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Paper>
+        ))}
+      </Box>
+      {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} /> : <div>error</div>}
     </>
-
-
-
-
-);
+  );
 }
