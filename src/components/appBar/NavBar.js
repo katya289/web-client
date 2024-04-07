@@ -91,11 +91,16 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
   );
 
   return (
-    <div>
-      <Drawer open={open} ModalProps={{ BackdropProps: { invisible: true } }}>
+    <Box>
+      <Drawer
+        open={open}
+        ModalProps={{ BackdropProps: { invisible: true } }}
+        sx={{ bgcolor: '#222831' }} 
+      >
         {DrawerList}
       </Drawer>
+
       <UploadPodcast open={uploadOpen} setUploadOpen={setUploadOpen} />
-    </div>
+    </Box>
   );
 }

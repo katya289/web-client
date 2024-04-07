@@ -3,7 +3,8 @@ import axios from "axios";
 
 import PrimarySearchAppBar from "../appBar/primarySearchAppBar";
 import Podcasts from "./PodcastsReview";
-import VideoPlayer from "../podcasts/VideoPlayer";
+import Audio from "../podcasts/Audio";
+
 
 export default function MainPage({isOpen, message}) {
 
@@ -11,13 +12,13 @@ export default function MainPage({isOpen, message}) {
 
     return (
         <>
-
-            <PrimarySearchAppBar />
+        <Audio></Audio>
+        
+            {/* <PrimarySearchAppBar />
             
-            <Podcasts />
+            <Podcasts /> */}
            
-           
-            {/* <VideoPlayer/> */}
+     
     
         </>
     );
