@@ -3,7 +3,8 @@ import screenfull from 'screenfull';
 import Container from '@mui/material/Container';
 import ControlIcons from './ControlIcons';
 import "./VideoPlayer.css";
-import { useState, useRef } from 'react';
+import api from '../../api';
+import { useState, useRef, useEffect } from 'react';
 const format = (seconds) => {
     if (isNaN(seconds)) {
         return '00:00'
@@ -20,7 +21,8 @@ const format = (seconds) => {
         return `${mm}:${ss}`
     }
 };
-export default function VideoPlayer() {
+export default function VideoPlayer({ podcastId }) {
+    const [currentPodcast, setCurrentPodcast] = useState({});
     const playerDivRef = useRef(null);
     const playerRef = useRef(null);
     const currentPlayerTime = playerRef.current ? playerRef.current.getCurrentTime() : '00:00';
@@ -35,6 +37,16 @@ export default function VideoPlayer() {
         played: 0,
         seeking: false,
     })
+
+    useEffect(() => {
+        console.log(podcastId)
+        const fetchPodcastById = async () => {
+            const response = await api.get(`podcasts/${podcastId}/get`);
+            console.log(response.data.podcast);
+            setCurrentPodcast(response.data.podcast);
+        }
+        fetchPodcastById();
+    }, [])
     const { playing, mute, volume, playerbackRate, played, seeking } = playerstate;
     const handlePlayerRate = (rate) => {
         setPlayerState({ ...playerstate, playerbackRate: rate });
@@ -55,11 +67,11 @@ export default function VideoPlayer() {
         playerRef.current.seekTo(playerRef.current.getCurrentTime() + 30, 'seconds')
     }
     const handlePlayerProgress = (state) => {
-        console.log('onProgress', state);
+        // console.log('onProgress', state);
         if (!playerstate.seeking) {
             setPlayerState({ ...playerstate, ...state })
         }
-        console.log('afterProgress', state);
+        // console.log('afterProgress', state);
     }
     const handlePlayerSeek = (newValue) => {
         setPlayerState({ ...playerstate, played: parseFloat(newValue / 100) });
@@ -88,7 +100,7 @@ export default function VideoPlayer() {
             <Container maxWidth="md">
                 <div className='playerDiv' ref={playerDivRef}>
                     <ReactPlayer width={'100%'} height='100%'
-                        url="https://s3.eu-central-1.amazonaws.com/aws-bucket.test/Learn+English+with+the+JOE+ROGAN+PODCAST+%C3%A2%C2%80%C2%94+Elon+Musk.mp4"
+                        url={`${currentPodcast.path_file}`}
                         ref={playerRef}
                         playing={playing}
                         muted={mute}

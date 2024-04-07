@@ -18,6 +18,7 @@ import VideoDialog from './VideoDetailsDialog';
 
 export default function Podcasts() {
   const [podcasts, setPodcasts] = useState([]);
+  const [podcastId, setPodcastId] = useState("");
   const [user, setUser] = useState({});
   const [likeCount, setLikeCount] = useState({});
   const [videoShow, setVideoShow] = useState(false);
@@ -49,8 +50,9 @@ export default function Podcasts() {
     console.log(`Podcast ${id} has ${likeCount[id] !== undefined ? likeCount[id] + 1 : 1} likes`);
   };
 
-  const handleOpenVideo = (path) => {
-    console.log(path)
+  const handleOpenVideo = (podcastId) => {
+    console.log(podcastId)
+    setPodcastId(podcastId);
     setVideoShow(true);
   }
 
@@ -61,7 +63,7 @@ export default function Podcasts() {
           <Paper key={item.id} elevation={4} sx={{ backgroundColor: '#222831', width: 250, padding: 2, borderRadius: 3, "&:hover": { boxShadow: '0px 0px 10px 5px rgba(0,0,0,0.3)', backgroundColor: 'rgba(0, 0, 0, 0.1)' }, transition: 'box-shadow 0.3s ease' }}>
             <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
               <CardMedia
-                onClick={() => handleOpenVideo(item.path_file)}
+                onClick={() => handleOpenVideo(item.id)}
                 component="video"
                 sx={{ width: '100%', cursor: 'pointer' }}
                 src={item.path_file}
@@ -89,7 +91,7 @@ export default function Podcasts() {
           </Paper>
         ))}
       </Box>
-      {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} /> : <div>error</div>}
+      {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} /> : <div>error</div>}
     </>
   );
 }
