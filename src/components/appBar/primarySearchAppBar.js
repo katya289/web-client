@@ -16,6 +16,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import Avatar from '@mui/material/Avatar';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { useNavigate } from 'react-router-dom';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import TemporaryDrawer from './NavBar';
 import { BASE_URL } from '../constants';
@@ -65,6 +66,7 @@ export default function PrimarySearchAppBar() {
   const [drawerState, setDrawerState] = useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const navigate = useNavigate();
   const handleDrawerClick = () => {
     setDrawerState(true);
   };
@@ -80,7 +82,9 @@ export default function PrimarySearchAppBar() {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
-
+  const handleAccountClick = () => {
+      navigate('/account');
+  }
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
@@ -103,7 +107,7 @@ export default function PrimarySearchAppBar() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleAccountClick}>My account</MenuItem>
     </Menu>
   );
 

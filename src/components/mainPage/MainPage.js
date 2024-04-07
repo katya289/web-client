@@ -6,20 +6,20 @@ import Podcasts from "./PodcastsReview";
 import Audio from "../podcasts/Audio";
 
 
-export default function MainPage({isOpen, message}) {
+export default function MainPage() {
 
 
 
     return (
         <>
-        <Audio></Audio>
-        
-            {/* <PrimarySearchAppBar />
-            
-            <Podcasts /> */}
-           
-     
-    
+            {/* <Audio></Audio> */}
+
+            <PrimarySearchAppBar />
+
+            <Podcasts />
+
+
+
         </>
     );
 }

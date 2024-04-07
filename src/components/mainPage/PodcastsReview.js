@@ -99,7 +99,7 @@ export default function Podcasts() {
           </Paper>
         ))}
       </Box>
-      {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} /> : <div>error</div>}
+      {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} /> : console.log('c')}
     </>
   );
 }

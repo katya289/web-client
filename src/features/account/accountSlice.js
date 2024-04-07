@@ -7,9 +7,9 @@ export const getAccountData = createAsyncThunk(
     'user/getAccountData',
     async() => {
         const token = localStorage.getItem("token");
-        const request = api.get('/account');
+        const request = api.get('/users/get');
         const response = (await request).data;
-        console.log(response)
+        // console.log(response)
         return response;
     }
 ) 
