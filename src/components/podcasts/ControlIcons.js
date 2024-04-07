@@ -74,11 +74,11 @@ export default function ControlIcons({ playandpause, playing, rewind, fastForwar
                 justifyContent="start"
                 style={{ padding: 16 }}
             >
-                <Grid item>
+                {/* <Grid item>
                     <Typography variant="h5" style={{ color: "white" }}>
                         Player
                     </Typography>
-                </Grid>
+                </Grid> */}
             </Grid>
 
             {/* Middle Segment */}
@@ -116,11 +116,11 @@ export default function ControlIcons({ playandpause, playing, rewind, fastForwar
                 justifyContent="space-between"
                 style={{ padding: 16 }}
             >
-                <Grid item>
+                {/* <Grid item>
                     <Typography variant="h5" style={{ color: "white" }}>
                         Tears Of Steel
                     </Typography>
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={12}>
                     <PrettoSlider min={0}

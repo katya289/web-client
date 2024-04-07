@@ -152,7 +152,7 @@ export default function PrimarySearchAppBar() {
           aria-haspopup="true"
           color="inherit"
         >
-          <Avatar src='http://localhost:4000/avatars/63.jpg' />
+          <Avatar src={`${BASE_URL}avatars/${localStorage.getItem("avatar")}`} />
         </IconButton>
         <p>Profile</p>
       </MenuItem>

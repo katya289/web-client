@@ -10,11 +10,14 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import Avatar from '@mui/material/Avatar';
 import api from '../../api';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import VideoFileIcon from '@mui/icons-material/VideoFile';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import { Badge } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import VideoDialog from './VideoDetailsDialog';
+import { BASE_URL } from '../constants';
+
 
 export default function Podcasts() {
   const [podcasts, setPodcasts] = useState([]);
@@ -23,7 +26,10 @@ export default function Podcasts() {
   const [likeCount, setLikeCount] = useState({});
   const [videoShow, setVideoShow] = useState(false);
   const navigate = useNavigate();
-
+  const formats = {
+    'Audio': <HeadphonesIcon />,
+    'Video': <VideoFileIcon />
+  }
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -69,7 +75,7 @@ export default function Podcasts() {
                 src={item.path_file}
                 alt="Cannot display video or audio file"
               />
-             
+
               <CardContent sx={{ bgcolor: '#31363F', flex: '1 0 auto', color: 'white' }}>
                 <IconButton onClick={() => handleLikeClick(item.id)}>
                   <Badge badgeContent={likeCount[item.id] || 0} sx={{ color: 'white' }}>
@@ -79,10 +85,12 @@ export default function Podcasts() {
                 <Typography component="div" variant="h5">
                   {item.name}
                 </Typography>
-                <Typography>Format: {item.format}<HeadphonesIcon /></Typography>
+
+                {formats[item.format]} 
+                <Typography>Format: {item.format}</Typography>
                 <Typography>Category: {item.category}</Typography>
                 <Stack direction={'row'} spacing={2} alignItems="center">
-                  <Avatar alt='User' src={item.avatar} sx={{width: '30px', height: '30px'}} />
+                  <Avatar alt='User' src={`${BASE_URL}avatars/${localStorage.getItem('avatar')}`} sx={{ width: '30px', height: '30px' }} />
                   <Typography>{user.name}</Typography>
                   <Typography>Views</Typography>
                 </Stack>
