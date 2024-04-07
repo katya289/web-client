@@ -36,6 +36,11 @@ export default function AccountPage() {
                 }, 4500);
             }
     }, [dispatch, token, isOpen, dispatch, navigate]);
+    const handleLogout = async () => {
+        localStorage.clear();
+        dispatch(setAlert({ message: "Logouted", type: 'success' }));
+        navigate('/')
+    }
     const handleDeleteAccount = async () => {
         try {
             await api.delete('/account/delete');
@@ -65,7 +70,7 @@ export default function AccountPage() {
 
                     </Box>
                     <Button onClick={() => handleDeleteAccount()}>Delete account</Button>
-                    <Button>Logout</Button>
+                    <Button onClick={() => handleLogout()}>Logout</Button>
                 </CardContent>
 
 
