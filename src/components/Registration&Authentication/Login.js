@@ -53,6 +53,8 @@ export default function SignIn() {
                 console.log(result.payload)
                 setToken(result.payload.accessToken);
                 localStorage.setItem("token", result.payload.accessToken)
+              
+                
                 setEmail('')
                 setPassword('')
                 // navigate('/')

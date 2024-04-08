@@ -6,30 +6,46 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle
+    DialogTitle,
+    Box
 } from '@mui/material';
+import BlockIcon from '@mui/icons-material/Block';
 
-export const CustomDialog = ({ isOpen, handleClose, title, subtitle, children }) => {
+export const CustomDialog = ({ isOpenDialog, handleClose, title, subtitle, children }) => {
     return (
-        <>
-            <Dialog fullWidth maxWidth='md' open={isOpen} onClose={handleClose} aria-labelledby="max-width">
-                <DialogTitle id='max-width-dialog-title'>
+        <Dialog
+        // color="primary"
+            open={isOpenDialog}
+            onClose={handleClose}
+            aria-labelledby="max-width"
+            sx={{
+                '& .MuiDialog-paper': {
+                    backgroundColor: '#222831',
+                    height: '200px',
+                    width: '600px'
+                },
+            }}
+        >
+            <DialogTitle sx={{ color: 'white' }} id='max-width-dialog-title'>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <BlockIcon sx={{ color: 'red', marginRight: '8px' }} />
                     {title}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>{subtitle}</DialogContentText>
-                    {children}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">Close</Button>
-                </DialogActions>
-            </Dialog>
-        </>
+                </Box>
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText sx={{ color: 'white' }}>{subtitle}</DialogContentText>
+
+            </DialogContent>
+            <DialogActions>
+                {children}
+                <Button onClick={handleClose} color="error">Close</Button>
+            </DialogActions>
+        </Dialog>
     );
 }
 
 CustomDialog.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
+    isOpenDialog: PropTypes.bool.isRequired,
     handleClose: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     subtitle: PropTypes.string,
