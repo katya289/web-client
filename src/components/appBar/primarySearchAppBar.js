@@ -83,7 +83,7 @@ export default function PrimarySearchAppBar() {
     handleMobileMenuClose();
   };
   const handleAccountClick = () => {
-      navigate('/account');
+    navigate('/account');
   }
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
@@ -223,7 +223,10 @@ export default function PrimarySearchAppBar() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-      <TemporaryDrawer open={drawerState} setOpenDialog={setDrawerState} />
+      {localStorage.getItem('token') ? (
+        <TemporaryDrawer open={drawerState} setOpenDialog={setDrawerState} />
+      ) : console.log('cc')}
+
 
     </Box>
   );
