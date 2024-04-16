@@ -74,7 +74,7 @@ export default function Search() {
 
     return (
 
-        <Box sx={{ display: 'flex', alignContent: 'center', alignItems: 'center', flexDirection: 'column', m: 5 }}>
+        <Box sx={{ display: 'flex', alignContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
             <Search>
                 <SearchIconWrapper>
                     <SearchIcon />
@@ -84,7 +84,7 @@ export default function Search() {
                     inputProps={{ 'aria-label': 'search' }}
                 />
             </Search>
-            <Grid container>
+            <Grid container spacing={3} sx={{justifyContent: 'center'}}>
                 {categories.map((item, index) => (
                     <Grid item xs={12} sm={6} md={4} key={index}>
                         <Paper onClick={() => handleCardClick(item.name)} key={index}
