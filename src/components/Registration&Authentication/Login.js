@@ -34,7 +34,7 @@ export default function SignIn() {
         if (isOpen) {
             setTimeout(() => {
                 dispatch(clearAlert());
-                // Перенаправление происходит только в случае успешной авторизации
+            
                 if (!error) {
                     navigate('/');
                 }

@@ -40,11 +40,11 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
     console.log();
   };
   const handleUploadClick = () => {
-    // setOpenDialog(true);
-    // console.log('open', open);
     setUploadOpen(true);
-    // <UploadPodcast open={open} />
   };
+  const handleSearchClick = () => {
+      navigate('/search')
+  }
 
   const icons = {
     'Dashboard': <HomeIcon />,
@@ -59,6 +59,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
     'Dashboard': handleDashboardClick,
     'Upload': handleUploadClick,
     'Log in': handleLogInClick,
+    'Search': handleSearchClick,
   };
 
   const DrawerList = (

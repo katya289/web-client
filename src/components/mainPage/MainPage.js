@@ -7,15 +7,18 @@ import Audio from "../podcasts/Audio";
 
 
 export default function MainPage() {
-    
+
 
     return (
         <>
-
-
             <PrimarySearchAppBar />
 
+
+
             <Podcasts />
+
+
+
 
 
 

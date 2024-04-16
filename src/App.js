@@ -6,7 +6,8 @@ import MainPage from './components/mainPage/MainPage';
 import AccountPage from './components/account/AccountPage';
 import React, { useState } from 'react';
 import { CustomDialog } from './components/CustomDialog';
-
+import Search from './components/podcasts/Search';
+import CategoryDetails from './components/podcasts/CategoryDetails';
 function App() {
  
 
@@ -20,7 +21,8 @@ function App() {
           
             <Route path='/account' element={<AccountPage />} />
       
-         
+          <Route path='/search' element={<Search/>}></Route>
+          <Route path='/category/details' element={<CategoryDetails/>}></Route>
         </Routes>
       </div>
       
