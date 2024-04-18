@@ -33,18 +33,19 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
     };
   }, [setOpenDialog]);
 
-  const handleLogInClick = () => {
-    navigate('/login');
+  
+  const handleItemClick = (action) => {
+    action();
+    setOpenDialog(false); // Close drawer on item click
   };
-  const handleDashboardClick = () => {
-    console.log();
+  const actions = {
+    'Dashboard': () => navigate('/dashboard'),
+    'Favorites': () => console.log('Favorites'),
+    'Search': () => navigate('/search'),
+    'Upload': () => setUploadOpen(true),
+    'Log in': () => navigate('/login'),
+    'Dark mode': () => console.log('Toggle dark mode'),
   };
-  const handleUploadClick = () => {
-    setUploadOpen(true);
-  };
-  const handleSearchClick = () => {
-      navigate('/search')
-  }
 
   const icons = {
     'Dashboard': <HomeIcon />,
@@ -55,12 +56,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
     'Dark mode': <DarkModeIcon />,
   };
 
-  const eventHandlers = {
-    'Dashboard': handleDashboardClick,
-    'Upload': handleUploadClick,
-    'Log in': handleLogInClick,
-    'Search': handleSearchClick,
-  };
+
 
   const DrawerList = (
     <Box
@@ -79,7 +75,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
       <Divider />
       <List>
         {Object.entries(icons).map(([text, icon]) => (
-          <ListItem key={text} disablePadding onClick={() => eventHandlers[text](text)}>
+          <ListItem key={text} disablePadding onClick={() => handleItemClick(actions[text])}>
             <ListItemButton>
               <ListItemIcon sx={{ color: 'white' }}>{icon}</ListItemIcon>
               <ListItemText sx={{ color: 'white' }} primary={text} />
@@ -94,9 +90,9 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
   return (
     <Box>
       <Drawer
-        open={open}
+        open={open} onClose={() => setOpenDialog(false)}
         ModalProps={{ BackdropProps: { invisible: true } }}
-        sx={{ bgcolor: '#222831' }} 
+        sx={{ bgcolor: '#222831' }}
       >
         {DrawerList}
       </Drawer>

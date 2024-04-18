@@ -8,12 +8,16 @@ import React, { useState } from 'react';
 import { CustomDialog } from './components/CustomDialog';
 import Search from './components/podcasts/Search';
 import CategoryDetails from './components/podcasts/CategoryDetails';
+import PrimarySearchAppBar from './components/appBar/primarySearchAppBar';
 function App() {
  
 
   return (
-    <Router>
+    <>
+        <Router>
       <div className="App">
+    <PrimarySearchAppBar/>
+
         <Routes>
           <Route path='/' element={<MainPage />}></Route>
           <Route path='/register' element={<SignUp />}></Route>
@@ -27,6 +31,8 @@ function App() {
       </div>
       
     </Router>
+    </>
+
   );
 }
 
