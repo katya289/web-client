@@ -89,7 +89,7 @@ export default function UploadPodcast({ open, setUploadOpen }) {
                         <MenuItem value="Comedy">Comedy</MenuItem>
                         <MenuItem value="Arts">Arts</MenuItem>
                         <MenuItem value="Education">Education</MenuItem>
-                        <MenuItem value="Fitness">Fitness</MenuItem>
+                        <MenuItem value="News">News</MenuItem>
                         <MenuItem value="Sports">Sports</MenuItem>
                         <MenuItem value="Business">Business</MenuItem>
                     </Select>

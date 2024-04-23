@@ -50,7 +50,7 @@ export default function AccountPage() {
     const handleLogout = async () => {
         localStorage.clear();
         dispatch(setAlert({ message: "Logouted", type: 'success' }));
-        navigate('/')
+        // navigate('/')
     }
     const handleDeleteAccount = async () => {
         try {

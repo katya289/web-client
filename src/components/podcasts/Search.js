@@ -56,7 +56,7 @@ export default function Search() {
         justifyContent: 'center',
     }));
     const categories = [
-        { name: 'Art', icon: <AutoAwesomeIcon /> },
+        { name: 'Arts', icon: <AutoAwesomeIcon /> },
         { name: 'Comedy', icon: <TheaterComedyIcon /> },
         { name: 'Education', icon: <SchoolIcon /> },
         { name: 'Sports', icon: <FitnessCenterIcon /> },
@@ -74,19 +74,11 @@ export default function Search() {
 
     return (
 
-        <Box sx={{ display: 'flex', alignContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
-            <Search>
-                <SearchIconWrapper>
-                    <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                    placeholder="Search…"
-                    inputProps={{ 'aria-label': 'search' }}
-                />
-            </Search>
-            <Grid container spacing={3} sx={{justifyContent: 'center'}}>
+        <Box sx={{ display: 'flex', alignContent: 'center', alignItems: 'center', flexDirection: 'column', width: '100%', justifyContent: 'center'}} ml={17} mt={5}>
+          
+            <Grid container sx={{justifyContent: 'center'}}>
                 {categories.map((item, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Grid item xs={12} sm={2} md={4} key={index}>
                         <Paper onClick={() => handleCardClick(item.name)} key={index}
                             sx={{
 
