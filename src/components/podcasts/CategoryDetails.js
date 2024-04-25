@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../../api";
 import { useLocation } from 'react-router-dom';
 import { Box, Card, CardContent, CardMedia, Typography, Paper, IconButton, InputBase, CardActions, Button } from "@mui/material";
@@ -8,19 +8,29 @@ import { debounce } from 'lodash';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import Badge from "@mui/material/Badge";
 import VideoDialog from "../mainPage/VideoDetailsDialog";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { useDispatch, useSelector } from "react-redux";
+import Alert from '@mui/material/Alert';
+import { setAlert, clearAlert } from "../../features/alert/alertSlice";
+
 export default function CategoryDetails() {
+    const { isOpen, message, type } = useSelector(state => state.alert);
+    const dispatch = useDispatch();
     const location = useLocation();
     const [podcasts, setPodcasts] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [filteredPodcasts, setFilteredPodcasts] = useState([]);
     const [videoShow, setVideoShow] = useState(false);
     const [podcastId, setPodcastId] = useState("");
+    const [likesState, setLikesState] = useState({});
+
     useEffect(() => {
         const category = location.state.category;
         const fetchPodcasts = async () => {
             try {
                 const response = await api.get(`/by-category/${category}`);
                 setPodcasts(response.data.podcasts);
+                initializeLikesState(response.data.podcasts);
             } catch (error) {
                 console.error('Error fetching podcasts:', error);
             }
@@ -28,6 +38,14 @@ export default function CategoryDetails() {
 
         fetchPodcasts();
     }, [location.state.category]);
+
+    const initializeLikesState = (podcasts) => {
+        const initialLikesState = {};
+        podcasts.forEach(podcast => {
+            initialLikesState[podcast.id] = false;
+        });
+        setLikesState(initialLikesState);
+    };
 
     const handleSearch = debounce((event) => {
         const searchText = event.target.value.toLowerCase();
@@ -38,9 +56,36 @@ export default function CategoryDetails() {
         );
         setFilteredPodcasts(filtered);
     }, 800);
-    const handleLikeClick = () => {
 
+    const handleLikeClick = (id) => {
+        if (likesState[id]) {
+            api.delete(`podcasts/like-delete/${id}`)
+                .then(() => {
+                    setLikesState(prevState => ({
+                        ...prevState,
+                        [id]: false
+                    }));
+                })
+                .catch(error => {
+                    console.error(error);
+                    // dispatch(setAlert({ message: error.response.data.message, type: 'error' }));
+                });
+        } else {
+            api.post(`podcasts/like/${id}`)
+                .then(response => {
+                    console.log(response);
+                    setLikesState(prevState => ({
+                        ...prevState,
+                        [id]: true
+                    }));
+                })
+                .catch(error => {
+                    console.error(error);
+                    // dispatch(setAlert({ message: error.response.data.message, type: 'error' }));
+                });
+        }
     }
+
     const StyledInputBase = styled(InputBase)(({ theme }) => ({
         color: 'inherit',
 
@@ -104,10 +149,10 @@ export default function CategoryDetails() {
                     <Paper key={index} elevation={3} sx={{ width: 450 }}>
                         <Card raised sx={{ margin: 2 }}>
                             <IconButton onClick={() => handleLikeClick(item.id)}>
-                                <Badge badgeContent={'2'} >
-                                    <FavoriteBorderIcon />
-                                </Badge>
+                                    {likesState[item.id] ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
                             </IconButton>
+
+
                             <CardMedia
                                 onClick={() => handleOpenVideo(item.id)}
                                 component="video"
@@ -119,9 +164,7 @@ export default function CategoryDetails() {
                                 <Typography variant="h6" component="div">
                                     {item.name}
                                 </Typography>
-                                {/* <Typography variant="subtitle1" color="text.secondary">
-                                    {item.description}
-                                </Typography> */}
+
                             </CardContent>
                             <CardActions>
                                 <Button>
@@ -132,6 +175,9 @@ export default function CategoryDetails() {
                     </Paper>
                 ))}
             </Box>
+            {isOpen && (
+                <Alert severity={type} sx={{ width: '200px', position: 'fixed', bottom: 20, right: 20, zIndex: 9999 }}>{message} </Alert>
+            )}
             {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} /> : console.log('c')}
 
         </>
