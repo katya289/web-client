@@ -40,7 +40,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
   };
   const actions = {
     'Dashboard': () => navigate('/dashboard'),
-    'Favorites': () => console.log('Favorites'),
+    'Favorites': () => navigate('/favorites'),
     'Search': () => navigate('/search'),
     'Upload': () => setUploadOpen(true),
     'Log in': () => navigate('/login'),

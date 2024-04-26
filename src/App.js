@@ -7,30 +7,30 @@ import AccountPage from './components/account/AccountPage';
 import React, { useState } from 'react';
 import { CustomDialog } from './components/CustomDialog';
 import Search from './components/podcasts/Search';
+import FavoritePodcasts from './components/podcasts/FavoritePodcasts';
 import CategoryDetails from './components/podcasts/CategoryDetails';
 import PrimarySearchAppBar from './components/appBar/primarySearchAppBar';
 function App() {
- 
+
 
   return (
     <>
-        <Router>
-      <div className="App">
-    <PrimarySearchAppBar/>
+      <Router>
+        <div className="App">
+          <PrimarySearchAppBar />
 
-        <Routes>
-          <Route path='/' element={<MainPage />}></Route>
-          <Route path='/register' element={<SignUp />}></Route>
-          <Route path='/login' element={<SignIn />} />
-          
+          <Routes>
+            <Route path='/' element={<MainPage />}></Route>
+            <Route path='/register' element={<SignUp />}></Route>
+            <Route path='/login' element={<SignIn />} />
+            <Route path='/favorites' element={<FavoritePodcasts />} />
             <Route path='/account' element={<AccountPage />} />
-      
-          <Route path='/search' element={<Search/>}></Route>
-          <Route path='/category/details' element={<CategoryDetails/>}></Route>
-        </Routes>
-      </div>
-      
-    </Router>
+            <Route path='/search' element={<Search />}></Route>
+            <Route path='/category/details' element={<CategoryDetails />}></Route>
+          </Routes>
+        </div>
+
+      </Router>
     </>
 
   );

@@ -39,10 +39,20 @@ export default function CategoryDetails() {
         fetchPodcasts();
     }, [location.state.category]);
 
+    useEffect(() => {
+        // Load likes state from localStorage on component mount
+        const storedLikesState = localStorage.getItem('likesState');
+        if (storedLikesState) {
+            setLikesState(JSON.parse(storedLikesState));
+        }
+    }, []);
+
     const initializeLikesState = (podcasts) => {
         const initialLikesState = {};
         podcasts.forEach(podcast => {
-            initialLikesState[podcast.id] = false;
+            // Check if the like exists in localStorage, if not set to false
+            const storedLike = JSON.parse(localStorage.getItem(`like_${podcast.id}`));
+            initialLikesState[podcast.id] = storedLike !== null ? storedLike : false;
         });
         setLikesState(initialLikesState);
     };
@@ -57,34 +67,28 @@ export default function CategoryDetails() {
         setFilteredPodcasts(filtered);
     }, 800);
 
-    const handleLikeClick = (id) => {
-        if (likesState[id]) {
-            api.delete(`podcasts/like-delete/${id}`)
-                .then(() => {
-                    setLikesState(prevState => ({
-                        ...prevState,
-                        [id]: false
-                    }));
-                })
-                .catch(error => {
-                    console.error(error);
-                    // dispatch(setAlert({ message: error.response.data.message, type: 'error' }));
-                });
-        } else {
-            api.post(`podcasts/like/${id}`)
-                .then(response => {
-                    console.log(response);
-                    setLikesState(prevState => ({
-                        ...prevState,
-                        [id]: true
-                    }));
-                })
-                .catch(error => {
-                    console.error(error);
-                    // dispatch(setAlert({ message: error.response.data.message, type: 'error' }));
-                });
+    const handleLikeClick = async (id) => {
+        try {
+            if (likesState[id]) {
+                await api.delete(`podcasts/like-delete/${id}`);
+                setLikesState(prevState => ({
+                    ...prevState,
+                    [id]: false
+                }));
+                localStorage.setItem(`like_${id}`, false);
+            } else {
+                await api.post(`podcasts/like/${id}`);
+                setLikesState(prevState => ({
+                    ...prevState,
+                    [id]: true
+                }));
+                localStorage.setItem(`like_${id}`, true);
+            }
+        } catch (error) {
+            console.error('Error handling like click:', error);
+            // Handle error if needed
         }
-    }
+    };
 
     const StyledInputBase = styled(InputBase)(({ theme }) => ({
         color: 'inherit',
@@ -149,7 +153,7 @@ export default function CategoryDetails() {
                     <Paper key={index} elevation={3} sx={{ width: 450 }}>
                         <Card raised sx={{ margin: 2 }}>
                             <IconButton onClick={() => handleLikeClick(item.id)}>
-                                    {likesState[item.id] ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+                                {likesState[item.id] ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
                             </IconButton>
 
 
@@ -183,3 +187,4 @@ export default function CategoryDetails() {
         </>
     );
 }
+ 
