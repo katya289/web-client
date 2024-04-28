@@ -38,14 +38,31 @@ export default function FavoritePodcasts() {
   }
 
   return (
-    <div>
+    <Box m={3}>
       {likedPodcasts.map((categoryObj) => (
-        <div key={categoryObj.category}>
-          <h2>{categoryObj.category}</h2>
+        <Box key={categoryObj.category}>
+          <Typography color={'white'} variant="overline" fontSize={'12px'}>{categoryObj.category}</Typography>
+
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 4, m: 3 }}>
+
             {categoryObj.podcasts && categoryObj.podcasts.map((item) => (
-              <Paper key={item.id} elevation={4} sx={{ backgroundColor: '#222831', width: 250, padding: 2, borderRadius: 3, "&:hover": { boxShadow: '0px 0px 10px 5px rgba(0,0,0,0.3)', backgroundColor: 'rgba(0, 0, 0, 0.1)' }, transition: 'box-shadow 0.3s ease' }}>
+              <Paper key={item.id} elevation={4}
+                sx={{
+                  backgroundColor: '#222831', width: 250, padding: 2, borderRadius: 3,
+                  "&:hover": {
+                    boxShadow: '0px 0px 10px 5px rgba(0,0,0,0.3)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)'
+                  },
+                  transition: 'box-shadow 0.3s ease'
+                }}>
+
                 <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                  <CardContent sx={{ bgcolor: '#31363F', flex: '1 0 auto', color: 'white', alignContent: 'center' }}>
+                    <Typography variant="subtitle1">
+                      {item.name}
+                    </Typography>
+
+                  </CardContent>
                   <CardMedia
                     onClick={() => handleOpenVideo(item.id)}
                     component="video"
@@ -54,23 +71,16 @@ export default function FavoritePodcasts() {
                     alt="Cannot display video or audio file"
                   />
 
-                  <CardContent sx={{ bgcolor: '#31363F', flex: '1 0 auto', color: 'white' }}>
-                    <Typography component="div" variant="h5">
-                      {item.name}
-                    </Typography>
-
-                    <Typography>Format: {item.format}</Typography>
-                  </CardContent>
                 </Card>
               </Paper>
             ))}
           </Box>
-        </div>
+        </Box>
       ))}
 
       {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={likedPodcasts} podcastId={podcastId} /> : console.log('c')}
 
-    </div>
+    </Box>
 
   );
 }

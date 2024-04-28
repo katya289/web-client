@@ -28,7 +28,7 @@ export default function VideoDialog({ videoShow, setVideoShow, podcasts, podcast
           {podcasts.map((podcast, index) => (
             <Box key={index}>
 
-              <Typography>{podcast.description}</Typography>
+              {/* <Typography>{podcast.description}</Typography> */}
 
             </Box>
           ))}
