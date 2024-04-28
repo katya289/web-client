@@ -29,6 +29,7 @@ export default function CategoryDetails() {
         const fetchPodcasts = async () => {
             try {
                 const response = await api.get(`/by-category/${category}`);
+                console.log(response.data)
                 setPodcasts(response.data.podcasts);
                 initializeLikesState(response.data.podcasts);
             } catch (error) {
