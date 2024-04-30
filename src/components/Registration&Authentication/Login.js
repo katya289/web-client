@@ -57,7 +57,7 @@ export default function SignIn() {
                 
                 setEmail('')
                 setPassword('')
-                // navigate('/')
+               
                 dispatch(setAlert({ message: 'Authorization successfull!', type: 'success' }));
 
             }

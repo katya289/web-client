@@ -1,0 +1,3 @@
+.no-scrollbar .MuiDialog-paperScrollBody {
+    overflow-y: hidden !important;
+}

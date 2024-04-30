@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api";
+import './DialogStyle.css'; // or import './DialogStyles.scss';
+
 import { useLocation } from 'react-router-dom';
-import { Box, Card, CardContent, CardMedia, Typography, Paper, IconButton, InputBase, CardActions, Button } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, Typography, Paper, IconButton, InputBase, CardActions, Button, Divider } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import { debounce } from 'lodash';
@@ -22,7 +24,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import Dialog from "@mui/material/Dialog";
 import { BASE_URL } from "../constants";
-
+import formatDate from "../formatDate";
 export default function CategoryDetails() {
     const { isOpen, message, type } = useSelector(state => state.alert);
     const dispatch = useDispatch();
@@ -231,37 +233,50 @@ export default function CategoryDetails() {
             )}
             {videoShow && <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} />}
 
-            <Dialog onClose={handleClose} open={open}>
-                <DialogTitle bgcolor={'#31363F'}>Podcast Details</DialogTitle>
-                <List sx={{ pt: 0, bgcolor: '#31363F' }}>
+            <Dialog onClose={handleClose} open={open} className="no-scrollbar">
+                <DialogTitle sx={{ bgcolor: '#31363F', color: 'white' }}>Podcast Details</DialogTitle>
+                <List sx={{ pt: 0, bgcolor: '#31363F'}}>
                     {currentPodcast && (
                         <ListItem disableGutters>
                             <ListItemButton>
-                                <ListItemText 
-                                    primary={currentPodcast.name ? currentPodcast.name : ''} 
-                                    secondary={currentPodcast.description ? currentPodcast.description : ''} 
+                                <ListItemText
+                                    primary={currentPodcast.name ? currentPodcast.name : ''}
+                                    secondary={currentPodcast.description ? currentPodcast.description : ''}
+                                    primaryTypographyProps={{ color: 'white' }}
+                                    secondaryTypographyProps={{ color: 'white' }}
                                 />
                             </ListItemButton>
+                            
                         </ListItem>
                     )}
-                    <ListItem disableGutters>
-                        <ListItemButton autoFocus>
-                            <ListItemAvatar>
-                                {currentPodcast && currentPodcast.user && currentPodcast.user.avatar ? (
-                                    <Avatar src={`${BASE_URL}avatars/${currentPodcast.user.avatar}`} />
-                                ) : (
-                                    <Avatar>
-                                        <PersonIcon />
-                                    </Avatar>
-                                )}
-                            </ListItemAvatar>
-                            <ListItemText 
-                                secondary={currentPodcast && currentPodcast.user && currentPodcast.user.name ? currentPodcast.user.name : ''} 
-                            />
-                        </ListItemButton>
+                    <Divider sx={{ backgroundColor: 'white'}} variant="middle"></Divider>
+                    <ListItem disableGutters sx={{m: 2}}>
+                        <ListItemAvatar>
+                            {currentPodcast && currentPodcast.user && currentPodcast.user.avatar ? (
+                                <Avatar src={`${BASE_URL}avatars/${currentPodcast.user.avatar}`} />
+                            ) : (
+                                <Avatar>
+                                    <PersonIcon />
+                                </Avatar>
+                            )}
+                        </ListItemAvatar>
+                        <ListItemText
+                            primary={currentPodcast && currentPodcast.user && currentPodcast.user.name ? currentPodcast.user.name : ''}
+                            primaryTypographyProps={{ color: 'white' }}
+                        />
                     </ListItem>
+                    <ListItem disableGutters sx={{m: 2}}>
+                        <Typography color={'white'} variant="subtitle1">Uploaded at: </Typography>
+                        <ListItemText
+                            secondary={currentPodcast && currentPodcast.createdAt ? formatDate(currentPodcast.createdAt) : ''}
+                            secondaryTypographyProps={{ color: 'white' }}
+                        />
+                    </ListItem>
+
                 </List>
             </Dialog>
+
+
 
         </Box>
     );

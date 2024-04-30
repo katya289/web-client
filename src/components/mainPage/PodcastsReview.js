@@ -38,6 +38,7 @@ export default function Podcasts() {
         console.log("Podcasts fetched successfully:", podcastsResponse.data);
 
         const userResponse = await api.get('users/get');
+
         setUser(userResponse.data.user);
         console.log("User fetched successfully:", userResponse.data);
       } catch (error) {
@@ -48,19 +49,14 @@ export default function Podcasts() {
     fetchData();
   }, []);
 
-  const handleLikeClick = (id) => {
-    setLikeCount((prevLikes) => ({
-      ...prevLikes,
-      [id]: (prevLikes[id] || 0) + 1,
-    }));
-    console.log(`Podcast ${id} has ${likeCount[id] !== undefined ? likeCount[id] + 1 : 1} likes`);
-  };
+ 
 
   const handleOpenVideo = (podcastId) => {
     console.log(podcastId)
     setPodcastId(podcastId);
     setVideoShow(true);
   }
+
 
   return (
     <>
@@ -77,22 +73,18 @@ export default function Podcasts() {
               />
 
               <CardContent sx={{ bgcolor: '#31363F', flex: '1 0 auto', color: 'white' }}>
-                <IconButton onClick={() => handleLikeClick(item.id)}>
-                  <Badge badgeContent={likeCount[item.id] || 0} sx={{ color: 'white' }}>
-                    <FavoriteBorderIcon sx={{ color: 'white' }} />
-                  </Badge>
-                </IconButton>
-                <Typography component="div" variant="h5">
+                
+                <Typography component="div" variant="subtitle1">
                   {item.name}
                 </Typography>
 
                 {formats[item.format]} 
                 <Typography>Format: {item.format}</Typography>
-                <Typography>Category: {item.category}</Typography>
+                {/* <Typography>Category: {item.category}</Typography> */}
                 <Stack direction={'row'} spacing={2} alignItems="center">
-                  <Avatar alt='User' src={`${BASE_URL}avatars/${localStorage.getItem('avatar')}`} sx={{ width: '30px', height: '30px' }} />
+                  <Avatar alt='User' src={`${BASE_URL}avatars/${user.avatar}`} sx={{ width: '30px', height: '30px' }} />
                   <Typography>{user.name}</Typography>
-                  <Typography>Views</Typography>
+                 
                 </Stack>
               </CardContent>
             </Card>

@@ -44,7 +44,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
     'Search': () => navigate('/search'),
     'Upload': () => setUploadOpen(true),
     'Log in': () => navigate('/login'),
-    'Dark mode': () => console.log('Toggle dark mode'),
+    'Light mode': () => console.log('Toggle light mode'),
   };
 
   const icons = {
@@ -53,7 +53,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
     'Search': <SearchIcon />,
     'Upload': <CloudUploadIcon />,
     'Log in': <LoginIcon />,
-    'Dark mode': <DarkModeIcon />,
+    'Light mode': <DarkModeIcon />,
   };
 
 
