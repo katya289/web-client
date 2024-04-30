@@ -10,9 +10,18 @@ import VideoDialog from "../mainPage/VideoDetailsDialog";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useDispatch, useSelector } from "react-redux";
 import Alert from '@mui/material/Alert';
-
+import Avatar from '@mui/material/Avatar';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import DialogTitle from '@mui/material/DialogTitle';
+import PersonIcon from '@mui/icons-material/Person';
+import AddIcon from '@mui/icons-material/Add';
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
-import PodcastsDialog from "./PodcastsDialog";
+import Dialog from "@mui/material/Dialog";
+import { BASE_URL } from "../constants";
 
 export default function CategoryDetails() {
     const { isOpen, message, type } = useSelector(state => state.alert);
@@ -25,11 +34,14 @@ export default function CategoryDetails() {
     const [podcastId, setPodcastId] = useState("");
     const [likesState, setLikesState] = useState({});
     const [open, setIsOpen] = useState(false);
+    const [currentPodcast, setCurrentPodcast] = useState(null);
+
     useEffect(() => {
         const category = location.state.category;
         const fetchPodcasts = async () => {
             try {
                 const response = await api.get(`/by-category/${category}`);
+                console.log(response.data.podcasts)
                 setPodcasts(response.data.podcasts);
                 initializeLikesState(response.data.podcasts);
             } catch (error) {
@@ -46,6 +58,17 @@ export default function CategoryDetails() {
             setLikesState(JSON.parse(storedLikesState));
         }
     }, []);
+
+    const fetchUser = async (userId) => {
+        try {
+            const response = await api.get(`users/get/${userId}`);
+            // console.log(response.data.user)
+            return response.data.user;
+        } catch (error) {
+            console.error('Failed to fetch user:', error);
+            return null;
+        }
+    }
 
     const initializeLikesState = (podcasts) => {
         const initialLikesState = {};
@@ -67,13 +90,17 @@ export default function CategoryDetails() {
     }, 800);
 
 
-    const handleDetailsClick = async (id) => {
-        console.log(id);
-        setIsOpen(true)
+    const handleDetailsClick = async (id, userId) => {
+        const selectedPodcast = podcasts.find(podcast => podcast.id === id);
+        const userResponse = await fetchUser(userId);
+        const user = userResponse[0]; // Assuming userResponse is an array with one user object
+        console.log(user);
+        setCurrentPodcast({ ...selectedPodcast, user });
+        setIsOpen(true);
+    };
 
 
-    }
-    const onClose = () => {
+    const handleClose = () => {
         setIsOpen(false)
     }
 
@@ -156,7 +183,7 @@ export default function CategoryDetails() {
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 4, m: 4 }}>
                 {(searchText.length > 0 ? filteredPodcasts : podcasts).map((item, index) => (
                     <Paper key={index} elevation={3} sx={{
-                        backgroundColor: '#222831', width: 250, padding: 2, borderRadius: 3,
+                        backgroundColor: '#222831', width: 300, padding: 2, borderRadius: 3,
                         "&:hover": {
                             boxShadow: '0px 0px 10px 5px rgba(0,0,0,0.3)',
                             backgroundColor: 'rgba(0, 0, 0, 0.1)'
@@ -187,7 +214,7 @@ export default function CategoryDetails() {
                             />
 
                             <CardActions sx={{ alignSelf: 'center' }}>
-                                <Button color="secondary" size="small" onClick={() => handleDetailsClick(item.id)}>
+                                <Button color="secondary" size="small" onClick={() => handleDetailsClick(item.id, item.userId)}>
                                     Open details
                                     <IconButton color="secondary" size="small">
                                         <DisplaySettingsIcon />
@@ -203,7 +230,39 @@ export default function CategoryDetails() {
                 <Alert severity={type} sx={{ width: '200px', position: 'fixed', bottom: 20, right: 20, zIndex: 9999 }}>{message} </Alert>
             )}
             {videoShow && <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} />}
-            <PodcastsDialog open={open} onClose={onClose} podcastId={podcastId}></PodcastsDialog>
+
+            <Dialog onClose={handleClose} open={open}>
+                <DialogTitle bgcolor={'#31363F'}>Podcast Details</DialogTitle>
+                <List sx={{ pt: 0, bgcolor: '#31363F' }}>
+                    {currentPodcast && (
+                        <ListItem disableGutters>
+                            <ListItemButton>
+                                <ListItemText 
+                                    primary={currentPodcast.name ? currentPodcast.name : ''} 
+                                    secondary={currentPodcast.description ? currentPodcast.description : ''} 
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    )}
+                    <ListItem disableGutters>
+                        <ListItemButton autoFocus>
+                            <ListItemAvatar>
+                                {currentPodcast && currentPodcast.user && currentPodcast.user.avatar ? (
+                                    <Avatar src={`${BASE_URL}avatars/${currentPodcast.user.avatar}`} />
+                                ) : (
+                                    <Avatar>
+                                        <PersonIcon />
+                                    </Avatar>
+                                )}
+                            </ListItemAvatar>
+                            <ListItemText 
+                                secondary={currentPodcast && currentPodcast.user && currentPodcast.user.name ? currentPodcast.user.name : ''} 
+                            />
+                        </ListItemButton>
+                    </ListItem>
+                </List>
+            </Dialog>
+
         </Box>
     );
 }
