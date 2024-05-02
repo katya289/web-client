@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api";
 import './DialogStyle.css'; // or import './DialogStyles.scss';
-
+import AudioPlayer from "./AudioPlayer";
 import { useLocation } from 'react-router-dom';
 import { Box, Card, CardContent, CardMedia, Typography, Paper, IconButton, InputBase, CardActions, Button, Divider } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
@@ -37,7 +37,9 @@ export default function CategoryDetails() {
     const [likesState, setLikesState] = useState({});
     const [open, setIsOpen] = useState(false);
     const [currentPodcast, setCurrentPodcast] = useState(null);
-
+    const [audioShow, setAudioShow] = useState(false);
+    const [currentMedia, setCurrentMedia] = useState("");
+    const [currentPreview, setCurrentPreview] = useState("");
     useEffect(() => {
         const category = location.state.category;
         const fetchPodcasts = async () => {
@@ -71,7 +73,9 @@ export default function CategoryDetails() {
             return null;
         }
     }
-
+    const handleCloseDialog = () => {
+        setAudioShow(false);
+      }
     const initializeLikesState = (podcasts) => {
         const initialLikesState = {};
         podcasts.forEach(podcast => {
@@ -160,6 +164,15 @@ export default function CategoryDetails() {
         setPodcastId(podcastId);
         setVideoShow(true);
     }
+
+    const handleOpenAudio = (podcastId, audioSrc, preview) => {
+        console.log(podcastId);
+        console.log(audioSrc);
+        setCurrentMedia(audioSrc);
+        setCurrentPreview(preview);
+        setAudioShow(true);
+
+    }
     const SearchIconWrapper = styled('div')(({ theme }) => ({
         padding: theme.spacing(0, 2),
         height: '100%',
@@ -216,6 +229,7 @@ export default function CategoryDetails() {
                                 />
                             ) : (
                                 <CardMedia
+                                    onClick={() => handleOpenAudio(item.id, item.path_file, item.preview)}
                                     component="img"
                                     src={item.preview}
                                 >
@@ -240,6 +254,7 @@ export default function CategoryDetails() {
                 <Alert severity={type} sx={{ width: '200px', position: 'fixed', bottom: 20, right: 20, zIndex: 9999 }}>{message} </Alert>
             )}
             {videoShow && <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} />}
+            {audioShow ? <AudioPlayer audioSrc={currentMedia} preview={currentPreview} audioShow={audioShow} onClose={handleCloseDialog} /> : null}
 
             <Dialog onClose={handleClose} open={open} className="no-scrollbar">
                 <DialogTitle sx={{ bgcolor: '#31363F', color: 'white' }}>Podcast Details</DialogTitle>

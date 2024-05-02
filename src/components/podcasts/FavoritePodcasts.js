@@ -3,12 +3,14 @@ import api from "../../api";
 import { Box, Card, CardContent, CardMedia, Typography, Paper, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import VideoDialog from "../mainPage/VideoDetailsDialog";
-
+import AudioPlayer from "./AudioPlayer";
 export default function FavoritePodcasts() {
   const [likedPodcasts, setLikedPodcasts] = useState([]);
   const [videoShow, setVideoShow] = useState(false);
   const [podcastId, setPodcastId] = useState("");
-
+  const [audioShow, setAudioShow] = useState(false);
+  const [currentMedia, setCurrentMedia] = useState("");
+  const [currentPreview, setCurrentPreview] = useState("");
   const fetchFavPodcasts = async () => {
     try {
       const response = await api.get('/podcasts/likes');
@@ -20,13 +22,16 @@ export default function FavoritePodcasts() {
         console.log(likedPodcastsArray)
         setLikedPodcasts(likedPodcastsArray);
       } else {
-        setLikedPodcasts([]); 
+        setLikedPodcasts([]);
       }
     } catch (error) {
       console.log(error);
     }
   }
 
+  const handleCloseDialog = () => {
+    setAudioShow(false)
+  }
 
   useEffect(() => {
     fetchFavPodcasts();
@@ -40,12 +45,20 @@ export default function FavoritePodcasts() {
   const handleDeleteFav = async (id) => {
     try {
       await api.delete(`/podcasts/like-delete/${id}`);
-      await fetchFavPodcasts(); 
+      await fetchFavPodcasts();
     } catch (error) {
       console.log(error);
     }
   }
-  
+  const handleOpenAudio = (podcastId, audioSrc, preview) => {
+    console.log(podcastId);
+    console.log(audioSrc);
+    setCurrentMedia(audioSrc);
+    setCurrentPreview(preview);
+    setAudioShow(true);
+
+  }
+
 
   return (
     <Box m={3}>
@@ -87,13 +100,21 @@ export default function FavoritePodcasts() {
                       {item.name}
                     </Typography>
                   </CardContent>
-                  <CardMedia
-                    onClick={() => handleOpenVideo(item.id)}
-                    component="video"
-                    sx={{ width: '100%', cursor: 'pointer' }}
-                    src={item.path_file}
-                    alt="Cannot display video or audio file"
-                  />
+                  {item.format === 'Video' ? (
+                    <CardMedia
+                      onClick={() => handleOpenVideo(item.id)}
+                      component="video"
+                      sx={{ width: '100%', cursor: 'pointer' }}
+                      src={item.path_file}
+                      alt="Cannot display video or audio file"
+                    />
+                  ) : (<CardMedia
+                    onClick={() => handleOpenAudio(item.id, item.path_file, item.preview)}
+                    component="img"
+                    src={item.preview}
+                  >
+                  </CardMedia>)}
+
                 </Card>
               </Paper>
             ))}
@@ -101,6 +122,8 @@ export default function FavoritePodcasts() {
         </Box>
       ))}
       {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={likedPodcasts} podcastId={podcastId} /> : null}
+      {audioShow ? <AudioPlayer audioSrc={currentMedia} preview={currentPreview} audioShow={audioShow} onClose={handleCloseDialog} /> : null}
+
     </Box>
   );
 }
