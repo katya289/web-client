@@ -256,7 +256,7 @@ export default function CategoryDetails() {
             {videoShow && <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} />}
             {audioShow ? <AudioPlayer audioSrc={currentMedia} preview={currentPreview} audioShow={audioShow} onClose={handleCloseDialog} /> : null}
 
-            <Dialog onClose={handleClose} open={open} className="no-scrollbar">
+            <Dialog onClose={handleClose} open={open} className="no-scrollbar" >
                 <DialogTitle sx={{ bgcolor: '#31363F', color: 'white' }}>Podcast Details</DialogTitle>
                 <List sx={{ pt: 0, bgcolor: '#31363F' }}>
                     {currentPodcast && (

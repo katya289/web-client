@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { IconButton, Slider, Grid, Typography, Dialog, CardMedia, Paper } from '@mui/material';
+import { IconButton, Slider, Grid, Typography, Dialog, CardMedia, Paper, Box } from '@mui/material';
 import { PlayArrow, Pause, VolumeUp, Close } from '@mui/icons-material';
 
 const AudioPlayer = ({ audioSrc, audioShow, preview, onClose }) => {
@@ -36,58 +36,60 @@ const AudioPlayer = ({ audioSrc, audioShow, preview, onClose }) => {
     };
 
     return (
-        <Dialog open={audioShow} fullWidth maxWidth="lg" onClose={onClose}>
-            <CardMedia component="img" src={preview} alt="Preview" sx={{ width: '100%', maxHeight: 300 }} />
-            <Paper elevation={0} sx={{ padding: '20px', backgroundColor: '#000' }}>
-                <Grid container alignItems="center" spacing={2}>
-                    <Grid item xs={12} sx={{ textAlign: 'right' }}>
-                        <IconButton onClick={onClose} sx={{ color: '#fff' }}>
-                            <Close />
-                        </IconButton>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container alignItems="center" spacing={2}>
-                            <Grid item>
-                                <IconButton onClick={handlePlayPause} sx={{ color: '#fff' }}>
-                                    {isPlaying ? <Pause /> : <PlayArrow />}
-                                </IconButton>
-                            </Grid>
-                            <Grid item xs>
-                                <audio
-                                    ref={audioRef}
-                                    src={audioSrc}
-                                    onTimeUpdate={handleTimeUpdate}
-                                />
-                                <Slider
-                                    value={currentTime}
-                                    max={duration}
-                                    onChange={(event, newValue) => audioRef.current.currentTime = newValue}
-                                    aria-labelledby="continuous-slider"
-                                    sx={{ color: '#fff' }}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <Typography sx={{ color: '#fff' }}>{formatTime(currentTime)}</Typography>
-                            </Grid>
-                            <Grid item>
-                                <VolumeUp sx={{ color: '#fff' }} />
-                            </Grid>
-                            <Grid item xs>
-                                <Slider
-                                    value={volume}
-                                    onChange={handleVolumeChange}
-                                    aria-labelledby="continuous-slider"
-                                    min={0}
-                                    max={100}
-                                    orientation="vertical"
-                                    style={{ height: 100 }}
-                                    sx={{ color: '#fff' }}
-                                />
+        <Dialog open={audioShow} onClose={onClose} fullWidth maxWidth={false}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '70vh' }}>
+                <CardMedia component="img" src={preview} alt="Preview" sx={{ width: '100%', mb: 2 }} />
+                <Paper elevation={0} sx={{ padding: '20px', backgroundColor: '#000', width: '100%', flexGrow: 1 }}>
+                    <Grid container alignItems="center" spacing={2}>
+                        <Grid item xs={12} sx={{ textAlign: 'right' }}>
+                            <IconButton onClick={onClose} sx={{ color: '#fff' }}>
+                                <Close />
+                            </IconButton>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Grid container alignItems="center" spacing={2}>
+                                <Grid item>
+                                    <IconButton onClick={handlePlayPause} sx={{ color: '#fff' }}>
+                                        {isPlaying ? <Pause /> : <PlayArrow />}
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs>
+                                    <audio
+                                        ref={audioRef}
+                                        src={audioSrc}
+                                        onTimeUpdate={handleTimeUpdate}
+                                    />
+                                    <Slider
+                                        value={currentTime}
+                                        max={duration}
+                                        onChange={(event, newValue) => audioRef.current.currentTime = newValue}
+                                        aria-labelledby="continuous-slider"
+                                        sx={{ color: '#fff' }}
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <Typography sx={{ color: '#fff' }}>{formatTime(currentTime)}</Typography>
+                                </Grid>
+                                <Grid item>
+                                    <VolumeUp sx={{ color: '#fff' }} />
+                                </Grid>
+                                <Grid item xs>
+                                    <Slider
+                                        value={volume}
+                                        onChange={handleVolumeChange}
+                                        aria-labelledby="continuous-slider"
+                                        min={0}
+                                        max={100}
+                                        orientation="vertical"
+                                        style={{ height: 100 }}
+                                        sx={{ color: '#fff' }}
+                                    />
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-            </Paper>
+                </Paper>
+            </Box>
         </Dialog>
     );
 };
