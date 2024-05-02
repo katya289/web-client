@@ -206,14 +206,22 @@ export default function CategoryDetails() {
                                 </Typography>
 
                             </CardContent>
+                            {item.format == 'Video' ? (
+                                <CardMedia
+                                    onClick={() => handleOpenVideo(item.id)}
+                                    component="video"
+                                    sx={{ height: 160, bgcolor: '#31363F' }}
+                                    image={item.path_file}
+                                    alt="Cannot display video or audio file"
+                                />
+                            ) : (
+                                <CardMedia
+                                    component="img"
+                                    src={item.preview}
+                                >
+                                </CardMedia>
+                            )}
 
-                            <CardMedia
-                                onClick={() => handleOpenVideo(item.id)}
-                                component="video"
-                                sx={{ height: 160, bgcolor: '#31363F' }}
-                                image={item.path_file}
-                                alt="Cannot display video or audio file"
-                            />
 
                             <CardActions sx={{ alignSelf: 'center' }}>
                                 <Button color="secondary" size="small" onClick={() => handleDetailsClick(item.id, item.userId)}>
@@ -235,7 +243,7 @@ export default function CategoryDetails() {
 
             <Dialog onClose={handleClose} open={open} className="no-scrollbar">
                 <DialogTitle sx={{ bgcolor: '#31363F', color: 'white' }}>Podcast Details</DialogTitle>
-                <List sx={{ pt: 0, bgcolor: '#31363F'}}>
+                <List sx={{ pt: 0, bgcolor: '#31363F' }}>
                     {currentPodcast && (
                         <ListItem disableGutters>
                             <ListItemButton>
@@ -246,11 +254,11 @@ export default function CategoryDetails() {
                                     secondaryTypographyProps={{ color: 'white' }}
                                 />
                             </ListItemButton>
-                            
+
                         </ListItem>
                     )}
-                    <Divider sx={{ backgroundColor: 'white'}} variant="middle"></Divider>
-                    <ListItem disableGutters sx={{m: 2}}>
+                    <Divider sx={{ backgroundColor: 'white' }} variant="middle"></Divider>
+                    <ListItem disableGutters sx={{ m: 2 }}>
                         <ListItemAvatar>
                             {currentPodcast && currentPodcast.user && currentPodcast.user.avatar ? (
                                 <Avatar src={`${BASE_URL}avatars/${currentPodcast.user.avatar}`} />
@@ -265,7 +273,7 @@ export default function CategoryDetails() {
                             primaryTypographyProps={{ color: 'white' }}
                         />
                     </ListItem>
-                    <ListItem disableGutters sx={{m: 2}}>
+                    <ListItem disableGutters sx={{ m: 2 }}>
                         <Typography color={'white'} variant="subtitle1">Uploaded at: </Typography>
                         <ListItemText
                             secondary={currentPodcast && currentPodcast.createdAt ? formatDate(currentPodcast.createdAt) : ''}

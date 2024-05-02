@@ -17,6 +17,7 @@ import { Badge } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import VideoDialog from './VideoDetailsDialog';
 import { BASE_URL } from '../constants';
+import AudioPlayer from '../podcasts/AudioPlayer';
 
 
 export default function Podcasts() {
@@ -25,7 +26,9 @@ export default function Podcasts() {
   const [user, setUser] = useState({});
   const [likeCount, setLikeCount] = useState({});
   const [videoShow, setVideoShow] = useState(false);
+  const [audioShow, setAudioShow] = useState(false);
   const [currentMedia, setCurrentMedia] = useState("");
+  const [currentPreview, setCurrentPreview] = useState("");
   const navigate = useNavigate();
   const formats = {
     'Audio': <HeadphonesIcon />,
@@ -50,7 +53,18 @@ export default function Podcasts() {
     fetchData();
   }, []);
 
+  const handleClose = () => {
+    setAudioShow(false);
+  }
 
+  const handleOpenAudio = (podcastId, audioSrc, preview) => {
+    console.log(podcastId);
+    console.log(audioSrc);
+    setCurrentMedia(audioSrc);
+    setCurrentPreview(preview);
+    setAudioShow(true);
+
+  }
 
   const handleOpenVideo = (podcastId) => {
     console.log(podcastId)
@@ -73,7 +87,15 @@ export default function Podcasts() {
                   src={item.path_file}
                   alt="Cannot display video or audio file"
                 />
-              ) : (console.log('c'))}
+              ) :
+                <CardMedia
+                  component="img"
+                  onClick={() => handleOpenAudio(item.id, item.path_file, item.preview)}
+                  // sx={{ width: 151 }}
+                  src={item.preview}
+                >
+                </CardMedia>
+              }
 
 
               <CardContent sx={{ bgcolor: '#31363F', flex: '1 0 auto', color: 'white' }}>
@@ -93,7 +115,8 @@ export default function Podcasts() {
           </Paper>
         ))}
       </Box>
-      {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} /> : console.log('c')}
+      {audioShow ? <AudioPlayer audioSrc={currentMedia} preview={currentPreview} audioShow={audioShow} onClose={handleClose} /> : null}
+      {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} /> : null}
     </>
   );
 }
