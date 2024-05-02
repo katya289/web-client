@@ -82,6 +82,9 @@ export default function UploadPodcast({ open, setUploadOpen }) {
                         <MenuItem value="Audio">Audio</MenuItem>
                         <MenuItem value="Video">Video</MenuItem>
                     </Select>
+                    {formData.format === 'Audio' ? (
+                        <Typography>You selected audio</Typography>
+                    ): (console.log('cc'))}
                 </FormControl>
                 <FormControl fullWidth sx={{ mt: 2 }}>
                     <InputLabel id="select-label-category">Category</InputLabel>

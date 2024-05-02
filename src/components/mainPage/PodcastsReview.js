@@ -25,6 +25,7 @@ export default function Podcasts() {
   const [user, setUser] = useState({});
   const [likeCount, setLikeCount] = useState({});
   const [videoShow, setVideoShow] = useState(false);
+  const [currentMedia, setCurrentMedia] = useState("");
   const navigate = useNavigate();
   const formats = {
     'Audio': <HeadphonesIcon />,
@@ -49,7 +50,7 @@ export default function Podcasts() {
     fetchData();
   }, []);
 
- 
+
 
   const handleOpenVideo = (podcastId) => {
     console.log(podcastId)
@@ -64,27 +65,28 @@ export default function Podcasts() {
         {podcasts.map((item) => (
           <Paper key={item.id} elevation={4} sx={{ backgroundColor: '#222831', width: 250, padding: 2, borderRadius: 3, "&:hover": { boxShadow: '0px 0px 10px 5px rgba(0,0,0,0.3)', backgroundColor: 'rgba(0, 0, 0, 0.1)' }, transition: 'box-shadow 0.3s ease' }}>
             <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-              <CardMedia
-                onClick={() => handleOpenVideo(item.id)}
-                component="video"
-                sx={{ width: '100%', cursor: 'pointer' }}
-                src={item.path_file}
-                alt="Cannot display video or audio file"
-              />
+              {item.format === 'Video' ? (
+                <CardMedia
+                  onClick={() => handleOpenVideo(item.id)}
+                  component="video"
+                  sx={{ width: '100%', cursor: 'pointer' }}
+                  src={item.path_file}
+                  alt="Cannot display video or audio file"
+                />
+              ) : (console.log('c'))}
+
 
               <CardContent sx={{ bgcolor: '#31363F', flex: '1 0 auto', color: 'white' }}>
-                
                 <Typography component="div" variant="subtitle1">
                   {item.name}
                 </Typography>
-
-                {formats[item.format]} 
+                {formats[item.format]}
                 <Typography>Format: {item.format}</Typography>
-                {/* <Typography>Category: {item.category}</Typography> */}
+
                 <Stack direction={'row'} spacing={2} alignItems="center">
                   <Avatar alt='User' src={`${BASE_URL}avatars/${user.avatar}`} sx={{ width: '30px', height: '30px' }} />
                   <Typography>{user.name}</Typography>
-                 
+
                 </Stack>
               </CardContent>
             </Card>
