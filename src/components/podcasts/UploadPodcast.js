@@ -3,13 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAlert, clearAlert } from '../../features/alert/alertSlice';
 import axios from 'axios';
 import { TextField, Dialog, DialogTitle, DialogContent, DialogActions, InputLabel, Select, MenuItem, FormControl, Button } from '@mui/material';
-import { CloudUpload } from '@mui/icons-material';
+import { CloudUpload, Label } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
+import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 export default function UploadPodcast({ open, setUploadOpen }) {
     const [file, setFile] = useState(null);
+    const [preview, setPreview] = useState(null);
     const dispatch = useDispatch();
     const { isOpen, message, type } = useSelector(state => state.alert);
     const navigate = useNavigate();
@@ -19,6 +21,7 @@ export default function UploadPodcast({ open, setUploadOpen }) {
         category: '',
         format: '',
         file: null,
+        preview: null,
     });
 
     const handleCloseDialog = () => {
@@ -29,9 +32,14 @@ export default function UploadPodcast({ open, setUploadOpen }) {
         setFile(event.target.files[0]);
     };
 
+    const handlePreviewChange = (event) => {
+        console.log(event.target.files[0]);
+        setPreview(event.target.files[0]);
+    }
     const handleInputChange = (event) => {
         setFormData({ ...formData, [event.target.name]: event.target.value });
     };
+
 
     const handleUpload = async () => {
         try {
@@ -41,6 +49,9 @@ export default function UploadPodcast({ open, setUploadOpen }) {
             formDataSend.append('format', formData.format);
             formDataSend.append('category', formData.category);
             formDataSend.append('file', file);
+            formDataSend.append('preview', preview);
+         
+           
             const token = localStorage.getItem('token');
             const response = await axios.post('http://127.0.0.1:4000/api/podcasts/upload', formDataSend, {
                 headers: {
@@ -63,7 +74,7 @@ export default function UploadPodcast({ open, setUploadOpen }) {
                 dispatch(clearAlert());
                 // navigate('/');
                 setUploadOpen(false)
-            }, 4500); 
+            }, 4500);
         }
     }, [isOpen, dispatch, navigate]);
 
@@ -83,8 +94,25 @@ export default function UploadPodcast({ open, setUploadOpen }) {
                         <MenuItem value="Video">Video</MenuItem>
                     </Select>
                     {formData.format === 'Audio' ? (
-                        <Typography>You selected audio</Typography>
-                    ): (console.log('cc'))}
+                        <Box textAlign="center">
+                            <input
+                                accept="image/*,video/*"
+                                style={{ display: 'none' }}
+                                id="contained-button-file"
+                                multiple
+                                type="file"
+                                name='preview'
+                                onChange={handlePreviewChange}
+                            />
+                            <label htmlFor="contained-button-file">
+                                <Button sx={{ alignSelf: 'center' }} variant="primary" color="primary" component="span">
+                                    Choose preview
+                                </Button>
+                            </label>
+                        </Box>
+                    ) : (
+                        console.log('Format is not Audio')
+                    )}
                 </FormControl>
                 <FormControl fullWidth sx={{ mt: 2 }}>
                     <InputLabel id="select-label-category">Category</InputLabel>
@@ -114,7 +142,7 @@ export default function UploadPodcast({ open, setUploadOpen }) {
                     action=""
                     onClick={() => document.querySelector('.input-field').click()}
                 >
-                    <input type="file" accept="image/*,video/*" className="input-field" hidden onChange={handleFileChange} />
+                    <input type="file" accept="image/*,video/*" className="input-field" name='file' hidden onChange={handleFileChange} />
                     <CloudUpload />
                     <Typography>Select your file here</Typography>
                 </FormControl>
