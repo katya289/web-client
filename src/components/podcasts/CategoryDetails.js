@@ -25,7 +25,7 @@ import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import Dialog from "@mui/material/Dialog";
 import { BASE_URL } from "../constants";
 import formatDate from "../formatDate";
-
+import TextField from "@mui/material/TextField";
 export default function CategoryDetails() {
     const { isOpen, message, type } = useSelector(state => state.alert);
     const dispatch = useDispatch();
@@ -69,6 +69,9 @@ export default function CategoryDetails() {
         } catch (error) {
             console.error('Failed to fetch user:', error);
         }
+    }
+    const handleCommentSend = async () => {
+        
     }
 
     const handleCloseDialog = () => {
@@ -235,21 +238,20 @@ export default function CategoryDetails() {
             {mediaShow && <AudioPlayer mediaSrc={currentMedia} preview={currentPreview} mediaShow={mediaShow} onClose={handleCloseDialog} />}
 
             <Dialog onClose={handleClose} open={open} PaperProps={{ sx: { overflow: 'hidden', width: '600px', height: '600px' } }} fullWidth maxWidth={false}>
-                <DialogTitle sx={{ bgcolor: '#31363F', color: 'white' }}>Podcast Details</DialogTitle>
-                <List sx={{ pt: 0, bgcolor: '#31363F' }}>
+                <DialogTitle>Podcast Details</DialogTitle>
+                <List sx={{ pt: 0 }}>
                     {currentPodcast && (
                         <ListItem disableGutters>
                             <ListItemButton>
                                 <ListItemText
                                     primary={currentPodcast.name ? currentPodcast.name : ''}
                                     secondary={currentPodcast.description ? currentPodcast.description : ''}
-                                    primaryTypographyProps={{ color: 'white' }}
-                                    secondaryTypographyProps={{ color: 'lightgray' }}
+
                                 />
                             </ListItemButton>
                         </ListItem>
                     )}
-                    <Divider sx={{ backgroundColor: 'white' }} variant="middle" />
+                    <Divider variant="middle" />
                     <ListItem disableGutters sx={{ m: 2 }}>
                         <ListItemAvatar>
                             {currentPodcast && currentPodcast.user && currentPodcast.user.avatar ? (
@@ -262,25 +264,31 @@ export default function CategoryDetails() {
                         </ListItemAvatar>
                         <ListItemText
                             primary={currentPodcast && currentPodcast.user && currentPodcast.user.name ? currentPodcast.user.name : ''}
-                            primaryTypographyProps={{ color: 'white' }}
+
                         />
                     </ListItem>
                     <ListItem disableGutters sx={{ m: 2 }}>
-                        <Typography color={'white'} variant="subtitle1">Uploaded at:</Typography>
+                        <Typography variant="subtitle1">Uploaded at:</Typography>
                         <ListItemText
                             secondary={currentPodcast && currentPodcast.createdAt ? formatDate(currentPodcast.createdAt) : ''}
-                            secondaryTypographyProps={{ color: 'lightgray' }}
+
                         />
                     </ListItem>
                 </List>
-                <List sx={{ pt: 0, bgcolor: '#31363F' }}>
-            
-                    <Divider sx={{ backgroundColor: 'white' }} variant="middle" />
+                <List sx={{ pt: 0 }}>
+
+                    <Divider variant="middle" />
                     <ListItem disableGutters sx={{ m: 2 }}>
-                        <Typography color={'white'} variant="h6">Comments:</Typography>
-                        
+                      
+
                     </ListItem>
-                    
+                    <ListItem disableGutters sx={{ m: 2 }}>
+                        <TextField placeholder="Write comment here" multiline rows={3} />
+
+                        <Button onClick={() => handleCommentSend()}>Send</Button>
+                    </ListItem>
+
+
                 </List>
             </Dialog>
         </Box>
