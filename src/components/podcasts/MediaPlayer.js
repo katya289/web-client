@@ -3,31 +3,31 @@ import { IconButton, Slider, Grid, Typography, Dialog, CardMedia, Paper, Box } f
 import { PlayArrow, Pause, VolumeUp, Close } from '@mui/icons-material';
 import VolumeDown from '@mui/icons-material/VolumeDown';
 
-const AudioPlayer = ({ audioSrc, audioShow, preview, onClose }) => {
-    const audioRef = useRef(null);
+const MediaPlayer = ({ mediaSrc, mediaShow, preview, onClose, format }) => {
+    const mediaRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(50);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
 
     const handlePlayPause = () => {
-        if (audioRef.current.paused) {
-            audioRef.current.play();
+        if (mediaRef.current.paused) {
+            mediaRef.current.play();
             setIsPlaying(true);
         } else {
-            audioRef.current.pause();
+            mediaRef.current.pause();
             setIsPlaying(false);
         }
     };
 
     const handleVolumeChange = (event, newValue) => {
         setVolume(newValue);
-        audioRef.current.volume = newValue / 100;
+        mediaRef.current.volume = newValue / 100;
     };
 
     const handleTimeUpdate = () => {
-        setCurrentTime(audioRef.current.currentTime);
-        setDuration(audioRef.current.duration);
+        setCurrentTime(mediaRef.current.currentTime);
+        setDuration(mediaRef.current.duration);
     };
 
     const formatTime = (time) => {
@@ -38,7 +38,7 @@ const AudioPlayer = ({ audioSrc, audioShow, preview, onClose }) => {
 
     return (
         <Dialog 
-            open={audioShow} 
+            open={mediaShow} 
             onClose={onClose}
             fullWidth 
             maxWidth={false} 
@@ -64,20 +64,40 @@ const AudioPlayer = ({ audioSrc, audioShow, preview, onClose }) => {
                 <IconButton onClick={onClose} sx={{ color: '#1E88E5', position: 'absolute', right: 16, top: 16 }}>
                     <Close />
                 </IconButton>
-                <CardMedia
-                    component="img"
-                    src={preview}
-                    alt="Preview"
-                    sx={{
-                        width: '100%',
-                        height: '100%',
-                        maxWidth: '800px',
-                        maxHeight: '500px',
-                        mb: 2,
-                        display: 'block',
-                        margin: 'auto',
-                    }}
-                />
+                {format === 'Audio' ? (
+                    <CardMedia
+                        component="img"
+                        src={preview}
+                        alt="Preview"
+                        sx={{
+                            width: '100%',
+                            height: '100%',
+                            maxWidth: '800px',
+                            maxHeight: '500px',
+                            mb: 2,
+                            display: 'block',
+                            margin: 'auto',
+                        }}
+                    />
+                ) : (
+                    <CardMedia
+                        component="video"
+                        src={mediaSrc}
+                        alt="Video cannot be shown"
+                        ref={mediaRef}
+                        onTimeUpdate={handleTimeUpdate}
+                        onClick={handlePlayPause}
+                        sx={{
+                            width: '100%',
+                            height: '100%',
+                            maxWidth: '800px',
+                            maxHeight: '500px',
+                            mb: 2,
+                            display: 'block',
+                            margin: 'auto',
+                        }} 
+                    />
+                )}
             </Paper>
             <Box sx={{
                 position: 'fixed', 
@@ -93,15 +113,17 @@ const AudioPlayer = ({ audioSrc, audioShow, preview, onClose }) => {
                         {isPlaying ? <Pause sx={{ fontSize: '50px' }} /> : <PlayArrow sx={{ fontSize: '50px' }} />}
                     </IconButton>
                 </Grid>
-                <audio
-                    ref={audioRef}
-                    src={audioSrc}
-                    onTimeUpdate={handleTimeUpdate}
-                />
+                {format === 'Audio' && (
+                    <audio
+                        ref={mediaRef}
+                        src={mediaSrc}
+                        onTimeUpdate={handleTimeUpdate}
+                    />
+                )}
                 <Slider
                     value={currentTime}
                     max={duration}
-                    onChange={(event, newValue) => audioRef.current.currentTime = newValue}
+                    onChange={(event, newValue) => mediaRef.current.currentTime = newValue}
                     aria-labelledby="continuous-slider"
                     sx={{ color: '#1E88E5', width: 1000 }}
                 />
@@ -124,4 +146,4 @@ const AudioPlayer = ({ audioSrc, audioShow, preview, onClose }) => {
     );
 };
 
-export default AudioPlayer;
+export default MediaPlayer;

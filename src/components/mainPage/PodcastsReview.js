@@ -17,7 +17,7 @@ import { Badge } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import VideoDialog from './VideoDetailsDialog';
 import { BASE_URL } from '../constants';
-import AudioPlayer from '../podcasts/AudioPlayer';
+import AudioPlayer from '../podcasts/MediaPlayer';
 
 
 export default function Podcasts() {
@@ -25,10 +25,11 @@ export default function Podcasts() {
   const [podcastId, setPodcastId] = useState("");
   const [user, setUser] = useState({});
   const [likeCount, setLikeCount] = useState({});
-  const [videoShow, setVideoShow] = useState(false);
-  const [audioShow, setAudioShow] = useState(false);
+  // const [videoShow, setVideoShow] = useState(false);
+  const [mediaShow, setMediaShow] = useState(false);
   const [currentMedia, setCurrentMedia] = useState("");
   const [currentPreview, setCurrentPreview] = useState("");
+  const [format, setFormat] = useState("");
   const navigate = useNavigate();
   const formats = {
     'Audio': <HeadphonesIcon />,
@@ -54,23 +55,20 @@ export default function Podcasts() {
   }, []);
 
   const handleClose = () => {
-    setAudioShow(false);
+    setMediaShow(false);
   }
 
-  const handleOpenAudio = (podcastId, audioSrc, preview) => {
+  const handleOpenMedia = (podcastId, mediaSrc, preview, format) => {
     console.log(podcastId);
-    console.log(audioSrc);
-    setCurrentMedia(audioSrc);
+    console.log(mediaSrc);
+    setCurrentMedia(mediaSrc);
     setCurrentPreview(preview);
-    setAudioShow(true);
+    setMediaShow(true);
+    setFormat(format);
 
   }
 
-  const handleOpenVideo = (podcastId) => {
-    console.log(podcastId)
-    setPodcastId(podcastId);
-    setVideoShow(true);
-  }
+  
 
 
   return (
@@ -79,25 +77,13 @@ export default function Podcasts() {
         {podcasts.map((item) => (
           <Paper key={item.id} elevation={4} sx={{ backgroundColor: '#222831', width: 250, padding: 2, borderRadius: 3, "&:hover": { boxShadow: '0px 0px 10px 5px rgba(0,0,0,0.3)', backgroundColor: 'rgba(0, 0, 0, 0.1)' }, transition: 'box-shadow 0.3s ease' }}>
             <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-              {item.format === 'Video' ? (
-                <CardMedia
-                  onClick={() => handleOpenVideo(item.id)}
-                  component="video"
-                  sx={{ width: '100%', cursor: 'pointer' }}
-                  src={item.path_file}
-                  alt="Cannot display video or audio file"
-                />
-              ) :
                 <CardMedia
                   component="img"
-                  onClick={() => handleOpenAudio(item.id, item.path_file, item.preview)}
-                  // sx={{ width: 151 }}
+                  onClick={() => handleOpenMedia(item.id, item.path_file, item.preview, item.format)}
                   src={item.preview}
                 >
                 </CardMedia>
-              }
-
-
+  
               <CardContent sx={{ bgcolor: '#31363F', flex: '1 0 auto', color: 'white' }}>
                 <Typography component="div" variant="subtitle1">
                   {item.name}
@@ -115,8 +101,8 @@ export default function Podcasts() {
           </Paper>
         ))}
       </Box>
-      {audioShow ? <AudioPlayer audioSrc={currentMedia} preview={currentPreview} audioShow={audioShow} onClose={handleClose} /> : null}
-      {videoShow ? <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} /> : null}
+      {mediaShow ? <AudioPlayer mediaSrc={currentMedia} preview={currentPreview} mediaShow={mediaShow} onClose={handleClose} format={format} /> : null}
+ 
     </>
   );
 }

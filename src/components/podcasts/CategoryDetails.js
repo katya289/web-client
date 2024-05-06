@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api";
 import './DialogStyle.css'; // or import './DialogStyles.scss';
-import AudioPlayer from "./AudioPlayer";
+import AudioPlayer from "./MediaPlayer";
 import { useLocation } from 'react-router-dom';
 import { Box, Card, CardContent, CardMedia, Typography, Paper, IconButton, InputBase, CardActions, Button, Divider } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
@@ -37,7 +37,7 @@ export default function CategoryDetails() {
     const [likesState, setLikesState] = useState({});
     const [open, setIsOpen] = useState(false);
     const [currentPodcast, setCurrentPodcast] = useState(null);
-    const [audioShow, setAudioShow] = useState(false);
+    const [mediaShow, setMediaShow] = useState(false);
     const [currentMedia, setCurrentMedia] = useState("");
     const [currentPreview, setCurrentPreview] = useState("");
     useEffect(() => {
@@ -66,7 +66,7 @@ export default function CategoryDetails() {
     const fetchUser = async (userId) => {
         try {
             const response = await api.get(`users/get/${userId}`);
-            // console.log(response.data.user)
+           
             return response.data.user;
         } catch (error) {
             console.error('Failed to fetch user:', error);
@@ -74,7 +74,7 @@ export default function CategoryDetails() {
         }
     }
     const handleCloseDialog = () => {
-        setAudioShow(false);
+        setMediaShow(false);
       }
     const initializeLikesState = (podcasts) => {
         const initialLikesState = {};
@@ -160,17 +160,14 @@ export default function CategoryDetails() {
         },
     }));
 
-    const handleOpenVideo = (podcastId) => {
-        setPodcastId(podcastId);
-        setVideoShow(true);
-    }
+  
 
-    const handleOpenAudio = (podcastId, audioSrc, preview) => {
+    const handleOpenMedia = (podcastId, mediaSrc, preview) => {
         console.log(podcastId);
-        console.log(audioSrc);
-        setCurrentMedia(audioSrc);
+        console.log(mediaSrc);
+        setCurrentMedia(mediaSrc);
         setCurrentPreview(preview);
-        setAudioShow(true);
+        setMediaShow(true);
 
     }
     const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -219,25 +216,17 @@ export default function CategoryDetails() {
                                 </Typography>
 
                             </CardContent>
-                            {item.format == 'Video' ? (
+                           
                                 <CardMedia
-                                    onClick={() => handleOpenVideo(item.id)}
-                                    component="video"
-                                    sx={{ height: 160, bgcolor: '#31363F' }}
-                                    image={item.path_file}
-                                    alt="Cannot display video or audio file"
-                                />
-                            ) : (
-                                <CardMedia
-                                    onClick={() => handleOpenAudio(item.id, item.path_file, item.preview)}
+                                    onClick={() => handleOpenMedia(item.id, item.path_file, item.preview)}
                                     component="img"
                                     src={item.preview}
                                 >
                                 </CardMedia>
-                            )}
+                           
 
 
-                            <CardActions sx={{ alignSelf: 'center' }}>
+                            {/* <CardActions sx={{ alignSelf: 'center' }}>
                                 <Button color="secondary" size="small" onClick={() => handleDetailsClick(item.id, item.userId)}>
                                     Open details
                                     <IconButton color="secondary" size="small">
@@ -245,7 +234,7 @@ export default function CategoryDetails() {
 
                                     </IconButton>
                                 </Button>
-                            </CardActions>
+                            </CardActions> */}
                         </Card>
                     </Paper>
                 ))}
@@ -253,10 +242,9 @@ export default function CategoryDetails() {
             {isOpen && (
                 <Alert severity={type} sx={{ width: '200px', position: 'fixed', bottom: 20, right: 20, zIndex: 9999 }}>{message} </Alert>
             )}
-            {videoShow && <VideoDialog videoShow={videoShow} setVideoShow={setVideoShow} podcasts={podcasts} podcastId={podcastId} />}
-            {audioShow ? <AudioPlayer audioSrc={currentMedia} preview={currentPreview} audioShow={audioShow} onClose={handleCloseDialog} /> : null}
+            {mediaShow ? <AudioPlayer mediaSrc={currentMedia} preview={currentPreview} mediaShow={mediaShow} onClose={handleCloseDialog} /> : null}
 
-            <Dialog onClose={handleClose} open={open} PaperProps={{ sx: { overflow: 'hidden' }}} sx={{ width: '100%', minHeight: '80vh'}} >
+            {/* <Dialog onClose={handleClose} open={open} PaperProps={{ sx: { overflow: 'hidden' }}} sx={{ width: '100%', minHeight: '80vh'}} >
                 <DialogTitle sx={{ bgcolor: '#31363F', color: 'white' }}>Podcast Details</DialogTitle>
                 <List sx={{ pt: 0, bgcolor: '#31363F' }}>
                     {currentPodcast && (
@@ -297,7 +285,7 @@ export default function CategoryDetails() {
                     </ListItem>
 
                 </List>
-            </Dialog>
+            </Dialog> */}
 
 
 

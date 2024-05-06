@@ -50,8 +50,8 @@ export default function UploadPodcast({ open, setUploadOpen }) {
             formDataSend.append('category', formData.category);
             formDataSend.append('file', file);
             formDataSend.append('preview', preview);
-         
-           
+
+
             const token = localStorage.getItem('token');
             const response = await axios.post('http://127.0.0.1:4000/api/podcasts/upload', formDataSend, {
                 headers: {
@@ -93,26 +93,9 @@ export default function UploadPodcast({ open, setUploadOpen }) {
                         <MenuItem value="Audio">Audio</MenuItem>
                         <MenuItem value="Video">Video</MenuItem>
                     </Select>
-                    {formData.format === 'Audio' ? (
-                        <Box textAlign="center">
-                            <input
-                                accept="image/*,video/*"
-                                style={{ display: 'none' }}
-                                id="contained-button-file"
-                                multiple
-                                type="file"
-                                name='preview'
-                                onChange={handlePreviewChange}
-                            />
-                            <label htmlFor="contained-button-file">
-                                <Button sx={{ alignSelf: 'center' }} variant="primary" color="primary" component="span">
-                                    Choose preview
-                                </Button>
-                            </label>
-                        </Box>
-                    ) : (
-                        console.log('Format is not Audio')
-                    )}
+
+
+
                 </FormControl>
                 <FormControl fullWidth sx={{ mt: 2 }}>
                     <InputLabel id="select-label-category">Category</InputLabel>
@@ -125,6 +108,22 @@ export default function UploadPodcast({ open, setUploadOpen }) {
                         <MenuItem value="Business">Business</MenuItem>
                     </Select>
                 </FormControl>
+                <Box textAlign="center">
+                    <input
+                        accept="image/*,video/*"
+                        style={{ display: 'none' }}
+                        id="contained-button-file"
+                        multiple
+                        type="file"
+                        name='preview'
+                        onChange={handlePreviewChange}
+                    />
+                    <label htmlFor="contained-button-file">
+                        <Button sx={{ alignSelf: 'center' }} variant="primary" color="primary" component="span">
+                            Choose preview
+                        </Button>
+                    </label>
+                </Box>
                 <FormControl
                     sx={{
                         border: '2px dashed #1475cf',
