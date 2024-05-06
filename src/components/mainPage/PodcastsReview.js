@@ -1,40 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import HeadphonesIcon from '@mui/icons-material/Headphones';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import Avatar from '@mui/material/Avatar';
-import api from '../../api';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import VideoFileIcon from '@mui/icons-material/VideoFile';
-import IconButton from '@mui/material/IconButton';
-import Paper from '@mui/material/Paper';
-import { Badge } from '@mui/material';
+import formatDate from '../formatDate';
 import { useNavigate } from 'react-router-dom';
-import VideoDialog from './VideoDetailsDialog';
-import { BASE_URL } from '../constants';
+import { useTheme } from '@mui/material/styles';
 import AudioPlayer from '../podcasts/MediaPlayer';
-
-
+import { BASE_URL } from '../constants';
+import { Box, Stack } from '@mui/material';
+import { Headphones, VideoLibrary } from '@mui/icons-material';
+import api from '../../api';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import IconButton from '@mui/material/IconButton';
 export default function Podcasts() {
+  const theme = useTheme();
   const [podcasts, setPodcasts] = useState([]);
-  const [podcastId, setPodcastId] = useState("");
   const [user, setUser] = useState({});
-  const [likeCount, setLikeCount] = useState({});
-  // const [videoShow, setVideoShow] = useState(false);
   const [mediaShow, setMediaShow] = useState(false);
   const [currentMedia, setCurrentMedia] = useState("");
   const [currentPreview, setCurrentPreview] = useState("");
   const [format, setFormat] = useState("");
   const navigate = useNavigate();
   const formats = {
-    'Audio': <HeadphonesIcon />,
-    'Video': <VideoFileIcon />
+    'Audio': <Headphones />,
+    'Video': <VideoLibrary />
   }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,7 +36,6 @@ export default function Podcasts() {
         console.log("Podcasts fetched successfully:", podcastsResponse.data);
 
         const userResponse = await api.get('users/get');
-
         setUser(userResponse.data.user);
         console.log("User fetched successfully:", userResponse.data);
       } catch (error) {
@@ -65,44 +57,46 @@ export default function Podcasts() {
     setCurrentPreview(preview);
     setMediaShow(true);
     setFormat(format);
-
   }
-
-  
-
 
   return (
     <>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 4, m: 3 }}>
-        {podcasts.map((item) => (
-          <Paper key={item.id} elevation={4} sx={{ backgroundColor: '#222831', width: 250, padding: 2, borderRadius: 3, "&:hover": { boxShadow: '0px 0px 10px 5px rgba(0,0,0,0.3)', backgroundColor: 'rgba(0, 0, 0, 0.1)' }, transition: 'box-shadow 0.3s ease' }}>
-            <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <CardMedia
-                  component="img"
-                  onClick={() => handleOpenMedia(item.id, item.path_file, item.preview, item.format)}
-                  src={item.preview}
-                >
-                </CardMedia>
-  
-              <CardContent sx={{ bgcolor: '#31363F', flex: '1 0 auto', color: 'white' }}>
-                <Typography component="div" variant="subtitle1">
-                  {item.name}
-                </Typography>
-                {formats[item.format]}
-                <Typography>Format: {item.format}</Typography>
-
-                <Stack direction={'row'} spacing={2} alignItems="center">
-                  <Avatar alt='User' src={`${BASE_URL}avatars/${user.avatar}`} sx={{ width: '30px', height: '30px' }} />
-                  <Typography>{user.name}</Typography>
-
-                </Stack>
-              </CardContent>
-            </Card>
-          </Paper>
-        ))}
-      </Box>
+      {podcasts.map((item) => (
+        <Card key={item.id} sx={{ display: 'flex', m: 4, borderRadius: 10, overflow: 'hidden', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', width: '800px' }}>
+          <CardMedia
+            component="img"
+            sx={{ width: '300px', height: '300px' }}
+            src={item.preview}
+          />
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 2 }}>
+            <CardContent>
+              <Typography variant="h5" sx={{ mb: 1 }}>
+                {item.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                {item.description}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Format: {formats[item.format]}
+              </Typography>
+            </CardContent>
+            <Stack direction={'row'} spacing={2} alignItems="center">
+              <Avatar alt='User' src={`${BASE_URL}avatars/${user.avatar}`} sx={{ width: '30px', height: '30px' }} />
+              <Typography variant="body2" color="text.secondary">
+                Author: {user.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Uploaded at: {formatDate(user.createdAt)}
+              </Typography>
+           
+              <IconButton onClick={() => handleOpenMedia(item.id, item.path_file, item.preview, item.format)} aria-label="play/pause">
+                <PlayArrowIcon   sx={{ height: 38, width: 38}} />
+              </IconButton>
+            </Stack>
+          </Box>
+        </Card>
+      ))}
       {mediaShow ? <AudioPlayer mediaSrc={currentMedia} preview={currentPreview} mediaShow={mediaShow} onClose={handleClose} format={format} /> : null}
- 
     </>
   );
 }

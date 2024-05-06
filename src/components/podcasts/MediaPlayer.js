@@ -88,10 +88,9 @@ const MediaPlayer = ({ mediaSrc, mediaShow, preview, onClose, format }) => {
                         onTimeUpdate={handleTimeUpdate}
                         onClick={handlePlayPause}
                         sx={{
-                            width: '100%',
-                            height: '100%',
-                            maxWidth: '800px',
-                            maxHeight: '500px',
+                            // width: '100%',
+                            // height: 'auto',
+                            maxWidth: '1100px',
                             mb: 2,
                             display: 'block',
                             margin: 'auto',
