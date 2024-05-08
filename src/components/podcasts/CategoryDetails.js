@@ -39,7 +39,7 @@ export default function CategoryDetails() {
     const [mediaShow, setMediaShow] = useState(false);
     const [currentMedia, setCurrentMedia] = useState("");
     const [currentPreview, setCurrentPreview] = useState("");
-
+    const [inputValue, setInputValue] = useState("");
     useEffect(() => {
         const category = location.state.category;
         const fetchPodcasts = async () => {
@@ -70,8 +70,19 @@ export default function CategoryDetails() {
             console.error('Failed to fetch user:', error);
         }
     }
-    const handleCommentSend = async () => {
-        
+    const handleCommentSend = async (id) => {
+        try {
+     
+            console.log(id)
+            const response = await api.post(`podcasts/comment/add/${id}`, {commentText: inputValue});
+            console.log(response.data)
+            setInputValue("");
+            
+
+        }
+        catch (error) {
+            console.log(error)
+        }
     }
 
     const handleCloseDialog = () => {
@@ -144,7 +155,10 @@ export default function CategoryDetails() {
             },
         },
     }));
-
+    const handleChange = (event) => {
+        setInputValue(event.target.value);
+       
+    };
     const Search = styled('div')(({ theme }) => ({
         display: 'flex',
         alignItems: 'center',
@@ -279,13 +293,13 @@ export default function CategoryDetails() {
 
                     <Divider variant="middle" />
                     <ListItem disableGutters sx={{ m: 2 }}>
-                      
+
 
                     </ListItem>
                     <ListItem disableGutters sx={{ m: 2 }}>
-                        <TextField placeholder="Write comment here" multiline rows={3} />
+                        <TextField placeholder="Write comment here" value={inputValue} onChange={handleChange} multiline rows={3} />
 
-                        <Button onClick={() => handleCommentSend()}>Send</Button>
+                        <Button onClick={() => handleCommentSend(currentPodcast.id)}>Send</Button>
                     </ListItem>
 
 
