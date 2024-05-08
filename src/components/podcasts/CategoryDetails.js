@@ -52,6 +52,16 @@ export default function CategoryDetails() {
             }
         };
 
+        const fetchAllComments = async () => {
+            try {
+                const response = await api.get('podcasts/comments');
+                console.log(response.data);
+            }
+            catch (error) {
+                console.log(error)
+            }
+        }
+        fetchAllComments();
         fetchPodcasts();
     }, [location.state.category]);
 
@@ -72,12 +82,12 @@ export default function CategoryDetails() {
     }
     const handleCommentSend = async (id) => {
         try {
-     
+
             console.log(id)
-            const response = await api.post(`podcasts/comment/add/${id}`, {commentText: inputValue});
+            const response = await api.post(`podcasts/comment/add/${id}`, { commentText: inputValue });
             console.log(response.data)
             setInputValue("");
-            
+
 
         }
         catch (error) {
@@ -157,7 +167,7 @@ export default function CategoryDetails() {
     }));
     const handleChange = (event) => {
         setInputValue(event.target.value);
-       
+
     };
     const Search = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -294,7 +304,7 @@ export default function CategoryDetails() {
                     <Divider variant="middle" />
                     <ListItem disableGutters sx={{ m: 2 }}>
 
-
+                        <ListItemText>dw</ListItemText>
                     </ListItem>
                     <ListItem disableGutters sx={{ m: 2 }}>
                         <TextField placeholder="Write comment here" value={inputValue} onChange={handleChange} multiline rows={3} />
