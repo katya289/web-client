@@ -26,6 +26,7 @@ import Dialog from "@mui/material/Dialog";
 import { BASE_URL } from "../constants";
 import formatDate from "../formatDate";
 import TextField from "@mui/material/TextField";
+
 export default function CategoryDetails() {
     const { isOpen, message, type } = useSelector(state => state.alert);
     const dispatch = useDispatch();
@@ -36,10 +37,13 @@ export default function CategoryDetails() {
     const [likesState, setLikesState] = useState({});
     const [open, setIsOpen] = useState(false);
     const [currentPodcast, setCurrentPodcast] = useState(null);
+    const [currentPodcastId, setCurrentPodcastId] = useState(null); // Состояние для идентификатора текущего подкаста
     const [mediaShow, setMediaShow] = useState(false);
     const [currentMedia, setCurrentMedia] = useState("");
     const [currentPreview, setCurrentPreview] = useState("");
     const [inputValue, setInputValue] = useState("");
+    const [comments, setComments] = useState([]);
+
     useEffect(() => {
         const category = location.state.category;
         const fetchPodcasts = async () => {
@@ -52,16 +56,6 @@ export default function CategoryDetails() {
             }
         };
 
-        const fetchAllComments = async () => {
-            try {
-                const response = await api.get('podcasts/comments');
-                console.log(response.data);
-            }
-            catch (error) {
-                console.log(error)
-            }
-        }
-        fetchAllComments();
         fetchPodcasts();
     }, [location.state.category]);
 
@@ -71,6 +65,11 @@ export default function CategoryDetails() {
             setLikesState(JSON.parse(storedLikesState));
         }
     }, []);
+    useEffect(() => {
+        if (currentPodcastId) {
+            fetchComments(currentPodcastId);
+        }
+    }, [currentPodcastId]);
 
     const fetchUser = async (userId) => {
         try {
@@ -80,15 +79,22 @@ export default function CategoryDetails() {
             console.error('Failed to fetch user:', error);
         }
     }
+
+    const fetchComments = async (podcastId) => {
+        try {
+            const response = await api.get(`podcasts/comments/${podcastId}`);
+            setComments(response.data.comments);
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
     const handleCommentSend = async (id) => {
         try {
-
-            console.log(id)
             const response = await api.post(`podcasts/comment/add/${id}`, { commentText: inputValue });
-            console.log(response.data)
             setInputValue("");
-
-
+            fetchComments(id);
         }
         catch (error) {
             console.log(error)
@@ -122,6 +128,7 @@ export default function CategoryDetails() {
         const selectedPodcast = podcasts.find(podcast => podcast.id === id);
         const userResponse = await fetchUser(userId);
         const user = userResponse[0];
+        setCurrentPodcastId(id);
         setCurrentPodcast({ ...selectedPodcast, user });
         setIsOpen(true);
     };
@@ -167,7 +174,6 @@ export default function CategoryDetails() {
     }));
     const handleChange = (event) => {
         setInputValue(event.target.value);
-
     };
     const Search = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -193,12 +199,9 @@ export default function CategoryDetails() {
         justifyContent: 'center',
     }));
     const handleOpenMedia = (podcastId, mediaSrc, preview) => {
-        console.log(podcastId);
-        console.log(mediaSrc);
         setCurrentMedia(mediaSrc);
         setCurrentPreview(preview);
         setMediaShow(true);
-
     }
     return (
         <Box m={3}>
@@ -261,7 +264,8 @@ export default function CategoryDetails() {
             )}
             {mediaShow && <AudioPlayer mediaSrc={currentMedia} preview={currentPreview} mediaShow={mediaShow} onClose={handleCloseDialog} />}
 
-            <Dialog onClose={handleClose} open={open} PaperProps={{ sx: { overflow: 'hidden', width: '600px', height: '600px' } }} fullWidth maxWidth={false}>
+            <Dialog onClose={handleClose} open={open} PaperProps={{ sx: { overflow: 'hidden', width: '600px' } }} fullWidth>
+
                 <DialogTitle>Podcast Details</DialogTitle>
                 <List sx={{ pt: 0 }}>
                     {currentPodcast && (
@@ -270,7 +274,6 @@ export default function CategoryDetails() {
                                 <ListItemText
                                     primary={currentPodcast.name ? currentPodcast.name : ''}
                                     secondary={currentPodcast.description ? currentPodcast.description : ''}
-
                                 />
                             </ListItemButton>
                         </ListItem>
@@ -288,32 +291,44 @@ export default function CategoryDetails() {
                         </ListItemAvatar>
                         <ListItemText
                             primary={currentPodcast && currentPodcast.user && currentPodcast.user.name ? currentPodcast.user.name : ''}
-
                         />
                     </ListItem>
                     <ListItem disableGutters sx={{ m: 2 }}>
                         <Typography variant="subtitle1">Uploaded at:</Typography>
                         <ListItemText
                             secondary={currentPodcast && currentPodcast.createdAt ? formatDate(currentPodcast.createdAt) : ''}
-
                         />
                     </ListItem>
                 </List>
                 <List sx={{ pt: 0 }}>
-
                     <Divider variant="middle" />
                     <ListItem disableGutters sx={{ m: 2 }}>
-
-                        <ListItemText>dw</ListItemText>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                            {comments.map(item => (
+                                <ListItem key={item.id} disableGutters sx={{ mb: 1 }}>
+                                    <Avatar src={`${BASE_URL}avatars/${item.user.avatar}`} />
+                                    <ListItemText primary={item.commentText} />
+                                </ListItem>
+                            ))}
+                        </Box>
                     </ListItem>
                     <ListItem disableGutters sx={{ m: 2 }}>
-                        <TextField placeholder="Write comment here" value={inputValue} onChange={handleChange} multiline rows={3} />
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                            <TextField
+                                placeholder="Write comment here"
+                                value={inputValue}
+                                onChange={handleChange}
+                                multiline
+                                rows={3}
+                                sx={{ width: '90%' }}
+                            />
 
-                        <Button onClick={() => handleCommentSend(currentPodcast.id)}>Send</Button>
+                            <Button onClick={() => handleCommentSend(currentPodcast.id)} sx={{ mt: 1 }}>Send</Button>
+                        </Box>
                     </ListItem>
-
-
                 </List>
+
+
             </Dialog>
         </Box>
     );
