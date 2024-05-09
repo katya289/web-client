@@ -26,6 +26,7 @@ import Dialog from "@mui/material/Dialog";
 import { BASE_URL } from "../constants";
 import formatDate from "../formatDate";
 import TextField from "@mui/material/TextField";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function CategoryDetails() {
     const { isOpen, message, type } = useSelector(state => state.alert);
@@ -37,13 +38,15 @@ export default function CategoryDetails() {
     const [likesState, setLikesState] = useState({});
     const [open, setIsOpen] = useState(false);
     const [currentPodcast, setCurrentPodcast] = useState(null);
-    const [currentPodcastId, setCurrentPodcastId] = useState(null); // Состояние для идентификатора текущего подкаста
+    const [currentPodcastId, setCurrentPodcastId] = useState(null);
     const [mediaShow, setMediaShow] = useState(false);
     const [currentMedia, setCurrentMedia] = useState("");
     const [currentPreview, setCurrentPreview] = useState("");
     const [inputValue, setInputValue] = useState("");
     const [comments, setComments] = useState([]);
 
+    const [currentUser, setCurrentUser] = useState(null);
+    const [hoveredComment, setHoveredComment] = useState(null);
     useEffect(() => {
         const category = location.state.category;
         const fetchPodcasts = async () => {
@@ -65,6 +68,20 @@ export default function CategoryDetails() {
             setLikesState(JSON.parse(storedLikesState));
         }
     }, []);
+
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            try {
+                const response = await api.get('/users/get');
+                setCurrentUser(response.data.user);
+            } catch (error) {
+                console.error('Error fetching current user:', error);
+            }
+        };
+
+        fetchCurrentUser();
+    }, []);
+
     useEffect(() => {
         if (currentPodcastId) {
             fetchComments(currentPodcastId);
@@ -136,7 +153,18 @@ export default function CategoryDetails() {
     const handleClose = () => {
         setIsOpen(false)
     }
+    const handleDeleteComm = async (commId, currentPodcastId) => {
+        console.log(currentPodcastId)
+        try {
+            const response = await api.delete(`/podcasts/comment/delete/${commId}`);
+            console.log(response); // Проверьте, что возвращает API при успешном удалении
 
+            fetchComments(currentPodcastId)
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
     const handleLikeClick = async (id) => {
         try {
             if (likesState[id]) {
@@ -172,9 +200,17 @@ export default function CategoryDetails() {
             },
         },
     }));
+    const handleMouseEnter = (commentId) => {
+        setHoveredComment(commentId);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredComment(null);
+    };
     const handleChange = (event) => {
         setInputValue(event.target.value);
     };
+
     const Search = styled('div')(({ theme }) => ({
         display: 'flex',
         alignItems: 'center',
@@ -198,11 +234,13 @@ export default function CategoryDetails() {
         alignItems: 'center',
         justifyContent: 'center',
     }));
+
     const handleOpenMedia = (podcastId, mediaSrc, preview) => {
         setCurrentMedia(mediaSrc);
         setCurrentPreview(preview);
         setMediaShow(true);
     }
+
     return (
         <Box m={3}>
             <Search>
@@ -265,15 +303,15 @@ export default function CategoryDetails() {
             {mediaShow && <AudioPlayer mediaSrc={currentMedia} preview={currentPreview} mediaShow={mediaShow} onClose={handleCloseDialog} />}
 
             <Dialog onClose={handleClose} open={open} PaperProps={{ sx: { overflow: 'hidden', width: '600px' } }} fullWidth>
-
-                <DialogTitle>Podcast Details</DialogTitle>
+                <DialogTitle sx={{ textAlign: 'center' }}>Podcast Details</DialogTitle>
                 <List sx={{ pt: 0 }}>
                     {currentPodcast && (
                         <ListItem disableGutters>
                             <ListItemButton>
                                 <ListItemText
-                                    primary={currentPodcast.name ? currentPodcast.name : ''}
-                                    secondary={currentPodcast.description ? currentPodcast.description : ''}
+                                    primary={currentPodcast.name || ''}
+                                    secondary={currentPodcast.description || ''}
+                                    primaryTypographyProps={{ fontWeight: 'bold' }}
                                 />
                             </ListItemButton>
                         </ListItem>
@@ -281,33 +319,52 @@ export default function CategoryDetails() {
                     <Divider variant="middle" />
                     <ListItem disableGutters sx={{ m: 2 }}>
                         <ListItemAvatar>
-                            {currentPodcast && currentPodcast.user && currentPodcast.user.avatar ? (
-                                <Avatar src={`${BASE_URL}avatars/${currentPodcast.user.avatar}`} />
-                            ) : (
-                                <Avatar>
-                                    <PersonIcon />
-                                </Avatar>
-                            )}
+                            <Avatar src={currentPodcast?.user?.avatar ? `${BASE_URL}avatars/${currentPodcast.user.avatar}` : null}>
+                                {!currentPodcast?.user?.avatar && <PersonIcon />}
+                            </Avatar>
                         </ListItemAvatar>
                         <ListItemText
-                            primary={currentPodcast && currentPodcast.user && currentPodcast.user.name ? currentPodcast.user.name : ''}
+                            primary={currentPodcast?.user?.name || 'Anonymous'}
+                            primaryTypographyProps={{ color: 'primary.main' }}
                         />
                     </ListItem>
                     <ListItem disableGutters sx={{ m: 2 }}>
-                        <Typography variant="subtitle1">Uploaded at:</Typography>
+                        <Typography variant="subtitle1" sx={{ mr: 1 }}>Uploaded at:</Typography>
                         <ListItemText
-                            secondary={currentPodcast && currentPodcast.createdAt ? formatDate(currentPodcast.createdAt) : ''}
+                            secondary={currentPodcast?.createdAt ? formatDate(currentPodcast.createdAt) : ''}
                         />
                     </ListItem>
                 </List>
                 <List sx={{ pt: 0 }}>
                     <Divider variant="middle" />
                     <ListItem disableGutters sx={{ m: 2 }}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '90%' }}>
                             {comments.map(item => (
-                                <ListItem key={item.id} disableGutters sx={{ mb: 1 }}>
-                                    <Avatar src={`${BASE_URL}avatars/${item.user.avatar}`} />
-                                    <ListItemText primary={item.commentText} />
+                                <ListItem
+                                    key={item.id}
+                                    disableGutters
+                                    sx={{ mb: 1, display: 'flex', justifyContent: 'space-between' }}
+                                    onMouseEnter={() => handleMouseEnter(item.id)}
+                                    onMouseLeave={handleMouseLeave}
+                                >
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Avatar src={`${BASE_URL}avatars/${item.user.avatar}`} />
+                                        <Box sx={{ ml: 2 }}>
+                                            <Typography variant="subtitle1">{item.user.name}</Typography>
+                                            <ListItemText primary={item.commentText} />
+                                        </Box>
+                                    </Box>
+                                    {currentUser && currentUser.id === item.userId && (
+                                        <IconButton
+                                            color={hoveredComment === item.id ? 'error' : 'default'}  // Используем красный цвет при наведении на комментарий
+
+                                            onClick={() => handleDeleteComm(item.id, currentPodcastId)}
+                                            // color="default"
+                                            size="small"
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    )}
                                 </ListItem>
                             ))}
                         </Box>
@@ -315,21 +372,19 @@ export default function CategoryDetails() {
                     <ListItem disableGutters sx={{ m: 2 }}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                             <TextField
-                                placeholder="Write comment here"
+                                placeholder="Write a comment..."
                                 value={inputValue}
                                 onChange={handleChange}
                                 multiline
                                 rows={3}
-                                sx={{ width: '90%' }}
+                                sx={{ width: '95%' }}
                             />
-
-                            <Button onClick={() => handleCommentSend(currentPodcast.id)} sx={{ mt: 1 }}>Send</Button>
+                            <Button onClick={() => handleCommentSend(currentPodcast.id)} sx={{ mt: 1, alignSelf: 'center' }}>Send</Button>
                         </Box>
                     </ListItem>
                 </List>
+            </Dialog >
 
-
-            </Dialog>
-        </Box>
+        </Box >
     );
 }
