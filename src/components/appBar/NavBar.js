@@ -40,8 +40,8 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
   };
 
   const actions = {
-    'Dashboard': () => navigate('/dashboard'),
-    'Favorites': () => navigate('/favorites'),
+    'Dashboard': () => navigate('/'),
+    // 'Favorites': () => navigate('/favorites'),
     'Search': () => navigate('/search'),
     'Upload': () => setUploadOpen(true),
     'Log in': () => navigate('/login'),
@@ -50,7 +50,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
 
   const icons = {
     'Dashboard': <HomeIcon />,
-    'Favorites': <FavoriteIcon />,
+    // 'Favorites': <FavoriteIcon />,
     'Search': <SearchIcon />,
     'Upload': <CloudUploadIcon />,
     'Log in': <LoginIcon />,
@@ -89,7 +89,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
         ModalProps={{ BackdropProps: { invisible: true } }}
         sx={{
           '& .MuiDrawer-paper': {
-            bgcolor: '#222831', // Set background color of the paper
+            bgcolor: '#222831', 
           },
         }}
       >

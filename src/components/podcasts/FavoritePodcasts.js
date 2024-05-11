@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import VideoDialog from "../mainPage/VideoDetailsDialog";
 import AudioPlayer from "./MediaPlayer";
 import MediaPlayer from "./MediaPlayer";
+import FavoriteIcon from '@mui/icons-material/Favorite';
 export default function FavoritePodcasts() {
   const [likedPodcasts, setLikedPodcasts] = useState([]);
   const [videoShow, setVideoShow] = useState(false);
@@ -12,7 +13,7 @@ export default function FavoritePodcasts() {
   const [mediaShow, setMediaShow] = useState(false);
   const [currentMedia, setCurrentMedia] = useState("");
   const [currentPreview, setCurrentPreview] = useState("");
-  
+
   const fetchFavPodcasts = async () => {
     try {
       const response = await api.get('/podcasts/likes');
@@ -60,6 +61,8 @@ export default function FavoritePodcasts() {
 
   return (
     <Box m={3}>
+      <Typography sx={{ color: 'white' }} variant="h6">Your favorites</Typography>
+      <FavoriteIcon sx={{ color: 'white' }} />
       {likedPodcasts.map((categoryObj) => (
         <Box key={categoryObj.category}>
           <Typography color={'white'} variant="overline" fontSize={'12px'}>{categoryObj.category}</Typography>
@@ -98,7 +101,7 @@ export default function FavoritePodcasts() {
                       {item.name}
                     </Typography>
                   </CardContent>
-                 <CardMedia
+                  <CardMedia
                     onClick={() => handleOpenMedia(item.id, item.path_file, item.preview)}
                     component="img"
                     src={item.preview}
