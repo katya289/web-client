@@ -27,37 +27,37 @@ export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
-    const {loading, error} = useSelector((state) => state.auth);
+    const { loading, error } = useSelector((state) => state.auth);
     const { isOpen, message, type } = useSelector(state => state.alert);
     const navigate = useNavigate();
     useEffect(() => {
         if (isOpen) {
             setTimeout(() => {
                 dispatch(clearAlert());
-            
+
                 if (!error) {
                     navigate('/');
                 }
             }, 4500);
         }
     }, [isOpen, error, dispatch, navigate]);
-    
-    
+
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const userCredentials = {email, password}
+        const userCredentials = { email, password }
         dispatch(loginUser(userCredentials)).then((result) => {
-            if(result.payload)
-            {
+            if (result.payload) {
                 console.log(result.payload)
                 setToken(result.payload.accessToken);
                 localStorage.setItem("token", result.payload.accessToken)
-              
-                
+                localStorage.setItem('sessionId', result.payload.sessionId);
+
+
                 setEmail('')
                 setPassword('')
-               
+
                 dispatch(setAlert({ message: 'Authorization successfull!', type: 'success' }));
 
             }
@@ -65,9 +65,9 @@ export default function SignIn() {
                 dispatch(setAlert({ message: error, type: 'error' }));
 
             }
-           
+
         })
-       
+
     };
     return (
         <>
