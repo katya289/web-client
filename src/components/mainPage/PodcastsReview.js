@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import formatDate from '../formatDate';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '../context/ThemeProvider';
 import AudioPlayer from '../podcasts/MediaPlayer';
 import { BASE_URL } from '../constants';
 import { Box, Stack } from '@mui/material';
@@ -16,6 +16,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import IconButton from '@mui/material/IconButton';
 export default function Podcasts() {
   const theme = useTheme();
+  console.log(theme);
   const [podcasts, setPodcasts] = useState([]);
   const [user, setUser] = useState({});
   const [mediaShow, setMediaShow] = useState(false);

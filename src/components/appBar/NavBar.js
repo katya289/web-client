@@ -15,12 +15,12 @@ import LoginIcon from '@mui/icons-material/Login';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { useNavigate } from 'react-router-dom';
 import UploadPodcast from '../podcasts/UploadPodcast';
-
+import { useTheme } from '../context/ThemeProvider';
 export default function TemporaryDrawer({ open, setOpenDialog }) {
   const navigate = useNavigate();
   const drawerRef = useRef(null);
   const [uploadOpen, setUploadOpen] = useState(false);
-
+  const { toggleTheme } = useTheme();
   useEffect(() => {
     function handleClickOutside(event) {
       if (drawerRef.current && !drawerRef.current.contains(event.target)) {
@@ -36,7 +36,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
 
   const handleItemClick = (action) => {
     action();
-    setOpenDialog(false); 
+    setOpenDialog(false);
   };
 
   const actions = {
@@ -45,7 +45,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
     'Search': () => navigate('/search'),
     'Upload': () => setUploadOpen(true),
     'Log in': () => navigate('/login'),
-    'Light mode': () => console.log('Toggle light mode'),
+    'Light mode': () => toggleTheme(),
   };
 
   const icons = {
@@ -89,7 +89,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
         ModalProps={{ BackdropProps: { invisible: true } }}
         sx={{
           '& .MuiDrawer-paper': {
-            bgcolor: '#222831', 
+            bgcolor: '#222831',
           },
         }}
       >

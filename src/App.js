@@ -4,28 +4,36 @@ import SignIn from './components/Registration&Authentication/Login';
 import SignUp from './components/Registration&Authentication/SignUp';
 import MainPage from './components/mainPage/MainPage';
 import AccountPage from './components/account/AccountPage';
-import React from 'react';
+import React, { useContext } from 'react';
 import { CustomDialog } from './components/CustomDialog';
 import Search from './components/podcasts/Search';
 import FavoritePodcasts from './components/podcasts/FavoritePodcasts';
 import CategoryDetails from './components/podcasts/CategoryDetails';
 import PrimarySearchAppBar from './components/appBar/primarySearchAppBar';
+import { ThemeProvider, useTheme } from './components/context/ThemeProvider';
 
 function App() {
+  const { theme } = useTheme();
+
+  console.log(theme)
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path='/' element={<MainPageWithAppBar />}></Route>
-          <Route path='/register' element={<SignUpWithAppBar />}></Route>
-          <Route path='/login' element={<SignInWithAppBar />} />
-          <Route path='/favorites' element={<FavoritePodcastsWithAppBar />} />
-          <Route path='/account' element={<AccountPageWithAppBar />} />
-          <Route path='/search' element={<SearchWithAppBar />}></Route>
-          <Route path='/category/details' element={<CategoryDetailsWithAppBar />}></Route>
-        </Routes>
-      </div>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <div className={`App ${theme}-theme`}>
+
+          <Routes>
+            <Route path='/' element={<MainPageWithAppBar />}></Route>
+            <Route path='/register' element={<SignUpWithAppBar />}></Route>
+            <Route path='/login' element={<SignInWithAppBar />} />
+            <Route path='/favorites' element={<FavoritePodcastsWithAppBar />} />
+            <Route path='/account' element={<AccountPageWithAppBar />} />
+            <Route path='/search' element={<SearchWithAppBar />}></Route>
+            <Route path='/category/details' element={<CategoryDetailsWithAppBar />}></Route>
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
+
   );
 }
 

@@ -5,16 +5,20 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './store/configureStore';
+import { ThemeProvider } from './components/context/ThemeProvider'; // Импортируем ваш контекст ThemeProvider
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Provider store={store}>
-    
-      <App />
- 
+  <ThemeProvider> {/* Оборачиваем приложение в ThemeProvider */}
 
-  </Provider>
+    <Provider store={store}>
+
+      <App />
+
+
+    </Provider>
+  </ThemeProvider>
 
 );
 

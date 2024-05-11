@@ -16,30 +16,20 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
+
 
 .App-link {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+
+
+/* index.css */
+
 body {
-  background-color: #31363F; /* Укажите нужный вам цвет */
-  
+  background-color: #31363F;
+  /* color: #fff; */
+  /* Пример стилей для текста */
 }
+
+/* */
