@@ -47,6 +47,9 @@ export default function CategoryDetails() {
 
     const [currentUser, setCurrentUser] = useState(null);
     const [hoveredComment, setHoveredComment] = useState(null);
+   
+
+    
     useEffect(() => {
         const category = location.state.category;
         const fetchPodcasts = async () => {
@@ -73,6 +76,7 @@ export default function CategoryDetails() {
         const fetchCurrentUser = async () => {
             try {
                 const response = await api.get('/users/get');
+                console.log(response.data.user)
                 setCurrentUser(response.data.user);
             } catch (error) {
                 console.error('Error fetching current user:', error);
@@ -296,6 +300,7 @@ export default function CategoryDetails() {
                         </Card>
                     </Paper>
                 ))}
+                
             </Box>
             {isOpen && (
                 <Alert severity={type} sx={{ width: '200px', position: 'fixed', bottom: 20, right: 20, zIndex: 9999 }}>{message}</Alert>
