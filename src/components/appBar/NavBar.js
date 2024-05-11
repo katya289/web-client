@@ -20,6 +20,7 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
   const navigate = useNavigate();
   const drawerRef = useRef(null);
   const [uploadOpen, setUploadOpen] = useState(false);
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (drawerRef.current && !drawerRef.current.contains(event.target)) {
@@ -33,11 +34,11 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
     };
   }, [setOpenDialog]);
 
-  
   const handleItemClick = (action) => {
     action();
-    setOpenDialog(false); // Close drawer on item click
+    setOpenDialog(false); 
   };
+
   const actions = {
     'Dashboard': () => navigate('/dashboard'),
     'Favorites': () => navigate('/favorites'),
@@ -56,8 +57,6 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
     'Light mode': <DarkModeIcon />,
   };
 
-
-
   const DrawerList = (
     <Box
       ref={drawerRef}
@@ -65,10 +64,6 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
         bgcolor: '#222831',
         width: 250,
         flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: 250,
-          boxSizing: 'border-box',
-        },
       }}
       role="presentation"
     >
@@ -92,7 +87,11 @@ export default function TemporaryDrawer({ open, setOpenDialog }) {
       <Drawer
         open={open} onClose={() => setOpenDialog(false)}
         ModalProps={{ BackdropProps: { invisible: true } }}
-        sx={{ bgcolor: '#222831' }}
+        sx={{
+          '& .MuiDrawer-paper': {
+            bgcolor: '#222831', // Set background color of the paper
+          },
+        }}
       >
         {DrawerList}
       </Drawer>
